@@ -1,13 +1,32 @@
 import requests
 import json
+import time
 from pathlib import Path
 from typing import List, Dict, Union
 from .config import COINGECKO_API, CURRENCIES, COIN_IMAGES_FILE, COIN_LIST_FILE
+
+PRICE_CACHE: dict = {}
+CACHE_EXPIRY = 60
+RATE_LIMIT_WINDOW = 60
+RATE_LIMIT_MAX_CALLS = 45
+_rate_timestamps = []
+
+#----------------------------------------
+# Check rate limit
+#----------------------------------------
+def check_rate_limit():
+    now = time.time()
+    global _rate_timestamps
+    _rate_timestamps = [t for t in _rate_timestamps if now - t < RATE_LIMIT_WINDOW]
+    if len(_rate_timestamps) >= RATE_LIMIT_MAX_CALLS:
+        raise Exception("CoinGecko API rate limit reached. Try again later.")
+    _rate_timestamps.append(now)
 
 #----------------------------------------
 # CoinGecko API: Get a full coin list
 #----------------------------------------
 def get_coin_list() -> list[dict]:
+    check_rate_limit()
     url = f"{COINGECKO_API}/coins/list"
     response = requests.get(url, timeout=30)
     response.raise_for_status()
@@ -37,6 +56,7 @@ def get_coin_image(coin_id: str) -> str:
         coins_cache = {}
     if coin_id in coins_cache:
         return coins_cache[coin_id]
+    check_rate_limit()
     url = f"{COINGECKO_API}/coins/{coin_id}"
     response = requests.get(url, timeout=10)
     response.raise_for_status()
@@ -51,17 +71,32 @@ def get_coin_image(coin_id: str) -> str:
 # CoinGecko API: Get coin prices
 #----------------------------------------
 def get_coin_prices(ids: Union[str, List[str]]) -> dict:
-    url = f"{COINGECKO_API}/simple/price"
-    if isinstance(ids, list):
-        ids = ",".join(ids)
-    vs_currencies = ",".join(CURRENCIES)
-    params = {
-        "ids": ids,
-        "vs_currencies": vs_currencies,
-        "include_market_cap": "true",
-        "include_24hr_vol": "true",
-        "include_24hr_change": "true"
-    }
-    response = requests.get(url, params=params, timeout=10)
-    response.raise_for_status()
-    return response.json()
+    check_rate_limit()
+    if isinstance(ids, str):
+        ids = [ids]
+    now = time.time()
+    result = {}
+    ids_to_fetch = []
+    for coin_id in ids:
+        cached = PRICE_CACHE.get(coin_id)
+        if cached and now - cached[0] < CACHE_EXPIRY:
+            result[coin_id] = cached[1]
+        else:
+            ids_to_fetch.append(coin_id)
+    if ids_to_fetch:
+        url = f"{COINGECKO_API}/simple/price"
+        params = {
+            "ids": ",".join(ids_to_fetch),
+            "vs_currencies": ",".join(CURRENCIES),
+            "include_market_cap": "true",
+            "include_24hr_vol": "true",
+            "include_24hr_change": "true"
+        }
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        fetched_prices = response.json()
+
+        for coin_id, price_data in fetched_prices.items():
+            PRICE_CACHE[coin_id] = (now, price_data)
+            result[coin_id] = price_data
+    return result

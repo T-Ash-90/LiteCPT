@@ -40,52 +40,62 @@ def save_portfolio(holdings):
 #----------------------------------------
 @APP.get("/portfolio")
 def portfolio():
-    holdings_data = load_portfolio()
-    coin_ids = [h["id"] for h in holdings_data]
-    prices = get_coin_prices(coin_ids)
+    try:
+        holdings_data = load_portfolio()
+        coin_ids = [h["id"] for h in holdings_data]
+        prices = get_coin_prices(coin_ids)
 
-    portfolio_final = []
-    for h in holdings_data:
-        coin_id = h["id"]
-        image_url = get_coin_image(coin_id)
-        h_final = {
-            "id": coin_id,
-            "symbol": h["symbol"],
-            "amount": h["amount"],
-            "image": image_url,
-            "price": prices.get(coin_id),
-            "total_value_usd": h["amount"] * prices.get(coin_id, {}).get("usd", 0)
-        }
-        portfolio_final.append(h_final)
+        portfolio_final = []
+        for h in holdings_data:
+            coin_id = h["id"]
+            image_url = get_coin_image(coin_id)
+            h_final = {
+                "id": coin_id,
+                "symbol": h["symbol"],
+                "amount": h["amount"],
+                "image": image_url,
+                "price": prices.get(coin_id),
+                "total_value_usd": h["amount"] * prices.get(coin_id, {}).get("usd", 0)
+            }
+            portfolio_final.append(h_final)
 
-    return JSONResponse(content={"holdings": portfolio_final})
+        return JSONResponse(content={"holdings": portfolio_final})
+
+    except Exception as e:
+        if "rate limit" in str(e).lower():
+            raise HTTPException(status_code=429, detail="CoinGecko API rate limit reached. Try again later.")
+        raise HTTPException(status_code=500, detail=str(e))
 
 #----------------------------------------
 # Endpoint: Add coin
 #----------------------------------------
 @APP.post("/portfolio/add")
 def add_coin(coin: CoinAdd):
-    # Validate coin ID
     if coin.id not in COIN_IDS_CACHE:
         raise HTTPException(status_code=400, detail=f"{coin.id} is not a valid coin ID")
+    try:
+        holdings = load_portfolio()
 
-    holdings = load_portfolio()
+        for h in holdings:
+            if h["id"] == coin.id:
+                h["amount"] += coin.amount
+                save_portfolio(holdings)
+                return {"message": f"Updated {coin.id} amount to {h['amount']}"}
 
-    for h in holdings:
-        if h["id"] == coin.id:
-            h["amount"] += coin.amount
-            save_portfolio(holdings)
-            return {"message": f"Updated {coin.id} amount to {h['amount']}"}
+        image_url = get_coin_image(coin.id)
+        holdings.append({
+            "id": coin.id,
+            "symbol": coin.symbol,
+            "amount": coin.amount,
+            "image": image_url
+        })
+        save_portfolio(holdings)
+        return {"message": f"Added {coin.id} to portfolio"}
 
-    image_url = get_coin_image(coin.id)
-    holdings.append({
-        "id": coin.id,
-        "symbol": coin.symbol,
-        "amount": coin.amount,
-        "image": image_url
-    })
-    save_portfolio(holdings)
-    return {"message": f"Added {coin.id} to portfolio"}
+    except Exception as e:
+        if "rate limit" in str(e).lower():
+            raise HTTPException(status_code=429, detail="CoinGecko API rate limit reached. Try again later.")
+        raise HTTPException(status_code=500, detail=str(e))
 
 #----------------------------------------
 # Endpoint: Remove coin
@@ -106,12 +116,18 @@ def remove_coin(coin: CoinRemove):
 #----------------------------------------
 @APP.get("/coins/search")
 def search_coins(q: str = Query(..., min_length=1)):
-    q_lower = q.lower()
-    results = [
-        c for c in COIN_LIST_CACHE
-        if q_lower in c["id"].lower() or q_lower in c["symbol"].lower() or q_lower in c.get("name", "").lower()
-    ]
-    return {"results": results[:50]}
+    try:
+        q_lower = q.lower()
+        results = [
+            c for c in COIN_LIST_CACHE
+            if q_lower in c["id"].lower() or q_lower in c["symbol"].lower() or q_lower in c.get("name", "").lower()
+        ]
+        return {"results": results[:50]}
+
+    except Exception as e:
+        if "rate limit" in str(e).lower():
+            raise HTTPException(status_code=429, detail="CoinGecko API rate limit reached. Try again later.")
+        raise HTTPException(status_code=500, detail=str(e))
 
 #----------------------------------------
 # Run server

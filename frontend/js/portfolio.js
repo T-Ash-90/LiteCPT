@@ -57,14 +57,19 @@ export function renderPortfolio(data) {
     data.holdings.forEach(h => {
         try {
             const tr = document.createElement("tr");
-
-            const priceUnit = h.price_unit[`${currency}_unit`].toFixed(4);
-            const total = h.holding_total[`${currency}_total`].toFixed(2);
-            const change = h.price_change[`${currency}_24h_change`].toFixed(2);
+            const priceUnit = h.price_unit && h.price_unit[`${currency}_unit`] !== null
+                ? h.price_unit[`${currency}_unit`].toFixed(4)
+                : "N/A";
+            const total = h.holding_total && h.holding_total[`${currency}_total`] !== null
+                ? h.holding_total[`${currency}_total`].toFixed(2)
+                : "N/A";
+            const change = h.price_change && h.price_change[`${currency}_24h_change`] !== null
+                ? h.price_change[`${currency}_24h_change`].toFixed(2)
+                : "N/A";
 
             tr.innerHTML = `
                 <td class="coin-cell">
-                    <img src="${h.image}" alt="${h.symbol}">
+                    <img src="${h.image || '/coin-placeholder.png'}" alt="${h.symbol}">
                     <div><div class="coin-name">${h.symbol.toUpperCase()}</div></div>
                 </td>
                 <td>${h.amount}</td>
@@ -84,7 +89,9 @@ export function renderPortfolio(data) {
     });
 
     try {
-        const totalValue = data[`portfolio_value_${currency}`].toFixed(2);
+        const totalValue = data[`portfolio_value_${currency}`] !== null
+            ? data[`portfolio_value_${currency}`].toFixed(2)
+            : "N/A";
 
         portfolioTotal.textContent =
             `Total Portfolio Value: ${totalValue} ${currency.toUpperCase()}`;

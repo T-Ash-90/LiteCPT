@@ -43,7 +43,20 @@ coinSearchInput.addEventListener("input", (e) => {
             results.forEach(c => {
                 const div = document.createElement("div");
                 div.className = "search-result-item";
-                div.textContent = `${c.name} (${c.symbol})`;
+
+                let coinText = `${c.name} (${c.symbol})`;
+
+                if (c.image) {
+                    const img = document.createElement("img");
+                    img.src = c.image;
+                    img.alt = `${c.name} logo`;
+                    img.className = "coin-logo";
+                    div.appendChild(img);
+                }
+
+                const textDiv = document.createElement("div");
+                textDiv.textContent = coinText;
+                div.appendChild(textDiv);
 
                 div.addEventListener("click", () => {
                     selectedCoinId = c.id;

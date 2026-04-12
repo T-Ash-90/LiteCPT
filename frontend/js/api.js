@@ -97,7 +97,7 @@ export async function searchCoinsAPI(query) {
         const data = await res.json();
         log.success("Search results received", {
             query,
-            resultCount: data?.length
+            resultCount: data?.results?.length
         });
 
         return data;

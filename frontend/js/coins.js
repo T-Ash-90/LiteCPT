@@ -25,7 +25,6 @@ export function initAddCoin() {
             parsedAmount: amount
         });
 
-        // Validation
         if (!selectedCoinId || !selectedCoinSymbol || isNaN(amount)) {
             log.warn("Invalid input when adding coin", {
                 selectedCoinId,

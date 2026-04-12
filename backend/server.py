@@ -2,7 +2,7 @@ import json
 from fastapi.responses import JSONResponse
 from fastapi import HTTPException, Query
 from pydantic import BaseModel
-from .config import APP, PORTFOLIO_FILE
+from .config import SERVER, PORTFOLIO_FILE
 from .coins import get_coin_image, get_coin_prices, load_coin_list
 
 #----------------------------------------
@@ -25,20 +25,24 @@ class CoinRemove(BaseModel):
 #----------------------------------------
 # Load/save portfolio helpers
 #----------------------------------------
-def load_portfolio():
+def load_portfolio(sort: bool = False):
     if PORTFOLIO_FILE.exists():
         with open(PORTFOLIO_FILE, "r") as f:
-            return json.load(f).get("holdings", [])
+            holdings = json.load(f).get("holdings", [])
+        if sort:
+            holdings.sort(key=lambda h: h.get("id", ""))
+        return holdings
     return []
 
 def save_portfolio(holdings):
+    sorted_holdings = sorted(holdings, key=lambda h: h.get("id", ""))
     with open(PORTFOLIO_FILE, "w") as f:
-        json.dump({"holdings": holdings}, f, indent=2)
+        json.dump({"holdings": sorted_holdings}, f, indent=2)
 
 #----------------------------------------
 # Endpoint: Get portfolio
 #----------------------------------------
-@APP.get("/portfolio")
+@SERVER.get("/portfolio")
 def portfolio():
     try:
         holdings_data = load_portfolio()
@@ -46,20 +50,54 @@ def portfolio():
         prices = get_coin_prices(coin_ids)
 
         portfolio_final = []
+        total_usd = total_eur = total_gbp = 0.0
+
         for h in holdings_data:
             coin_id = h["id"]
             image_url = get_coin_image(coin_id)
+            price_data = prices.get(coin_id, {})
+
+            usd_unit = price_data.get("usd", 0)
+            eur_unit = price_data.get("eur", 0)
+            gbp_unit = price_data.get("gbp", 0)
+
+            usd_total = h["amount"] * usd_unit
+            eur_total = h["amount"] * eur_unit
+            gbp_total = h["amount"] * gbp_unit
+
+            total_usd += usd_total
+            total_eur += eur_total
+            total_gbp += gbp_total
+
             h_final = {
                 "id": coin_id,
-                "symbol": h["symbol"],
+                "symbol": h["symbol"].lower(),
                 "amount": h["amount"],
                 "image": image_url,
-                "price": prices.get(coin_id),
-                "total_value_usd": h["amount"] * prices.get(coin_id, {}).get("usd", 0)
+                "price_unit": {
+                    "usd_unit": usd_unit,
+                    "eur_unit": eur_unit,
+                    "gbp_unit": gbp_unit
+                },
+                "price_change": {
+                    "usd_24h_change": price_data.get("usd_24h_change"),
+                    "eur_24h_change": price_data.get("eur_24h_change"),
+                    "gbp_24h_change": price_data.get("gbp_24h_change")
+                },
+                "holding_total": {
+                    "usd_total": usd_total,
+                    "eur_total": eur_total,
+                    "gbp_total": gbp_total
+                }
             }
             portfolio_final.append(h_final)
 
-        return JSONResponse(content={"holdings": portfolio_final})
+        return JSONResponse(content={
+            "holdings": portfolio_final,
+            "portfolio_value_usd": total_usd,
+            "portfolio_value_eur": total_eur,
+            "portfolio_value_gbp": total_gbp
+        })
 
     except Exception as e:
         if "rate limit" in str(e).lower():
@@ -69,7 +107,7 @@ def portfolio():
 #----------------------------------------
 # Endpoint: Add coin
 #----------------------------------------
-@APP.post("/portfolio/add")
+@SERVER.post("/portfolio/add")
 def add_coin(coin: CoinAdd):
     if coin.id not in COIN_IDS_CACHE:
         raise HTTPException(status_code=400, detail=f"{coin.id} is not a valid coin ID")
@@ -85,7 +123,7 @@ def add_coin(coin: CoinAdd):
         image_url = get_coin_image(coin.id)
         holdings.append({
             "id": coin.id,
-            "symbol": coin.symbol,
+            "symbol": coin.symbol.lower(),
             "amount": coin.amount,
             "image": image_url
         })
@@ -100,7 +138,7 @@ def add_coin(coin: CoinAdd):
 #----------------------------------------
 # Endpoint: Remove coin
 #----------------------------------------
-@APP.post("/portfolio/remove")
+@SERVER.post("/portfolio/remove")
 def remove_coin(coin: CoinRemove):
     holdings = load_portfolio()
     new_holdings = [h for h in holdings if h["id"] != coin.id]
@@ -114,7 +152,7 @@ def remove_coin(coin: CoinRemove):
 #----------------------------------------
 # Endpoint: Search Coins
 #----------------------------------------
-@APP.get("/coins/search")
+@SERVER.get("/coins/search")
 def search_coins(q: str = Query(..., min_length=1)):
     try:
         q_lower = q.lower()
@@ -134,4 +172,4 @@ def search_coins(q: str = Query(..., min_length=1)):
 #----------------------------------------
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(APP, host="127.0.0.1", port=8010)
+    uvicorn.run(SERVER, host="127.0.0.1", port=8010)

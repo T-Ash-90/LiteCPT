@@ -3,11 +3,6 @@ from pathlib import Path
 from typing import Optional
 
 #----------------------------------------
-# Server
-#----------------------------------------
-SERVER = FastAPI()
-
-#----------------------------------------
 # File paths
 #----------------------------------------
 DATA_DIR = Path(__file__).parent / "data"

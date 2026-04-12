@@ -1,27 +1,27 @@
 import uvicorn
 import json
 from pathlib import Path
-from fastapi import HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from .config import SERVER, PORTFOLIO_FILE
+from .config import PORTFOLIO_FILE
 from .coins import get_coin_image, get_coin_prices, load_coin_list
 
-#----------------------------------------
-# Serve index.html
-#----------------------------------------
-SERVER.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
+# ----------------------------------------
+# API router
+# ----------------------------------------
+api = FastAPI()
 
-#----------------------------------------
+# ----------------------------------------
 # Load coin list at startup (in-memory cache)
-#----------------------------------------
+# ----------------------------------------
 COIN_LIST_CACHE = load_coin_list()
 COIN_IDS_CACHE = {c["id"] for c in COIN_LIST_CACHE}
 
-#----------------------------------------
+# ----------------------------------------
 # Pydantic models for add/remove
-#----------------------------------------
+# ----------------------------------------
 class CoinAdd(BaseModel):
     id: str
     symbol: str
@@ -30,9 +30,9 @@ class CoinAdd(BaseModel):
 class CoinRemove(BaseModel):
     id: str
 
-#----------------------------------------
+# ----------------------------------------
 # Load/save portfolio helpers
-#----------------------------------------
+# ----------------------------------------
 def load_portfolio(sort: bool = False):
     if PORTFOLIO_FILE.exists():
         with open(PORTFOLIO_FILE, "r") as f:
@@ -47,10 +47,10 @@ def save_portfolio(holdings):
     with open(PORTFOLIO_FILE, "w") as f:
         json.dump({"holdings": sorted_holdings}, f, indent=2)
 
-#----------------------------------------
-# Endpoint: Get portfolio
-#----------------------------------------
-@SERVER.get("/portfolio")
+# ----------------------------------------
+# API endpoints
+# ----------------------------------------
+@api.get("/portfolio")
 def portfolio():
     try:
         holdings_data = load_portfolio()
@@ -106,22 +106,17 @@ def portfolio():
             "portfolio_value_eur": total_eur,
             "portfolio_value_gbp": total_gbp
         })
-
     except Exception as e:
         if "rate limit" in str(e).lower():
             raise HTTPException(status_code=429, detail="CoinGecko API rate limit reached. Try again later.")
         raise HTTPException(status_code=500, detail=str(e))
 
-#----------------------------------------
-# Endpoint: Add coin
-#----------------------------------------
-@SERVER.post("/portfolio/add")
+@api.post("/portfolio/add")
 def add_coin(coin: CoinAdd):
     if coin.id not in COIN_IDS_CACHE:
         raise HTTPException(status_code=400, detail=f"{coin.id} is not a valid coin ID")
     try:
         holdings = load_portfolio()
-
         for h in holdings:
             if h["id"] == coin.id:
                 h["amount"] += coin.amount
@@ -137,16 +132,12 @@ def add_coin(coin: CoinAdd):
         })
         save_portfolio(holdings)
         return {"message": f"Added {coin.id} to portfolio"}
-
     except Exception as e:
         if "rate limit" in str(e).lower():
             raise HTTPException(status_code=429, detail="CoinGecko API rate limit reached. Try again later.")
         raise HTTPException(status_code=500, detail=str(e))
 
-#----------------------------------------
-# Endpoint: Remove coin
-#----------------------------------------
-@SERVER.post("/portfolio/remove")
+@api.post("/portfolio/remove")
 def remove_coin(coin: CoinRemove):
     holdings = load_portfolio()
     new_holdings = [h for h in holdings if h["id"] != coin.id]
@@ -157,10 +148,7 @@ def remove_coin(coin: CoinRemove):
     save_portfolio(new_holdings)
     return {"message": f"Removed {coin.id} from portfolio"}
 
-#----------------------------------------
-# Endpoint: Search Coins
-#----------------------------------------
-@SERVER.get("/coins/search")
+@api.get("/coins/search")
 def search_coins(q: str = Query(..., min_length=1)):
     try:
         q_lower = q.lower()
@@ -169,15 +157,19 @@ def search_coins(q: str = Query(..., min_length=1)):
             if q_lower in c["id"].lower() or q_lower in c["symbol"].lower() or q_lower in c.get("name", "").lower()
         ]
         return {"results": results[:50]}
-
     except Exception as e:
         if "rate limit" in str(e).lower():
             raise HTTPException(status_code=429, detail="CoinGecko API rate limit reached. Try again later.")
         raise HTTPException(status_code=500, detail=str(e))
 
-#----------------------------------------
+# ----------------------------------------
+# Mount API and static frontend separately
+# ----------------------------------------
+api.mount("/api", api)
+api.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
+
+# ----------------------------------------
 # Run server
-#----------------------------------------
+# ----------------------------------------
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(SERVER, host="127.0.0.1", port=8010)
+    uvicorn.run(api, host="127.0.0.1", port=8010)

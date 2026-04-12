@@ -1,0 +1,21 @@
+.search-results {
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--card-bg);
+    border-radius: 0 0 8px 8px;
+    border: 1px solid var(--card-border);
+    border-top: none;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 100;
+    display: none;
+}
+
+.search-result-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+.search-result-item:hover { background: rgba(255,255,255,0.05); }

@@ -26,6 +26,11 @@ export function initAddCoin() {
 export function attachRemoveHandlers() {
     document.querySelectorAll(".remove-btn").forEach(btn => {
         btn.addEventListener("click", async () => {
+            const coinName = (btn.dataset.id).toUpperCase();
+
+            const confirmed = confirm(`Are you sure you want to remove ${coinName}?`);
+            if (!confirmed) return;
+
             try {
                 await removeCoinAPI(btn.dataset.id);
                 fetchPortfolio();

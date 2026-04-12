@@ -26,7 +26,6 @@ A simple, responsive electron app to track your cryptocurrency holdings in real-
 
 ## Requirements
 
-- [Ollama](https://ollama.com/) & downloaded LLM models *([phi4-mini:3.8b](https://ollama.com/library/phi4-mini) recommended)*
 - Python 3
 - Node.js and npm (for Electron app)
 - Dependencies listed in requirements.txt

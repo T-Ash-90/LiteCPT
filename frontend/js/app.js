@@ -10,6 +10,7 @@ const addCoinBtn = document.getElementById("add-coin-btn");
 const amountInput = document.getElementById("amount");
 
 let selectedCoinId = null;
+let selectedCoinSymbol = null; // store symbol too
 
 // Fetch portfolio
 async function fetchPortfolio() {
@@ -92,6 +93,7 @@ coinSearchInput.addEventListener("input", async (e) => {
         div.textContent = `${c.name} (${c.symbol})`;
         div.addEventListener("click", () => {
             selectedCoinId = c.id;
+            selectedCoinSymbol = c.symbol; // store symbol
             coinSearchInput.value = c.name;
             searchResults.style.display = "none";
         });
@@ -103,19 +105,30 @@ coinSearchInput.addEventListener("input", async (e) => {
 // Add coin
 addCoinBtn.addEventListener("click", async () => {
     const amount = parseFloat(amountInput.value);
-    if (!selectedCoinId || isNaN(amount)) {
+    if (!selectedCoinId || !selectedCoinSymbol || isNaN(amount)) {
         alert("Select a coin and enter a valid amount.");
         return;
     }
-    await fetch(`${API_BASE}/portfolio/add`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: selectedCoinId, symbol: c.symbol, amount })
-    });
-    selectedCoinId = null;
-    coinSearchInput.value = "";
-    amountInput.value = "";
-    fetchPortfolio();
+    try {
+        await fetch(`${API_BASE}/portfolio/add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: selectedCoinId,
+                symbol: selectedCoinSymbol,
+                amount
+            })
+        });
+        // Reset inputs
+        selectedCoinId = null;
+        selectedCoinSymbol = null;
+        coinSearchInput.value = "";
+        amountInput.value = "";
+        fetchPortfolio();
+    } catch (err) {
+        console.error("Error adding coin:", err);
+        alert("Failed to add coin. See console for details.");
+    }
 });
 
 // Update table when currency changes

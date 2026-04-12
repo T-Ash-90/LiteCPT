@@ -15,5 +15,4 @@ venv/
 *.log
 *.bin
 node_modules/
-coins.json
 portfolio.json

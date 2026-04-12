@@ -44,7 +44,7 @@ coinSearchInput.addEventListener("input", (e) => {
                 const div = document.createElement("div");
                 div.className = "search-result-item";
 
-                let coinText = `${c.name} (${c.symbol})`;
+                let coinText = `${c.name} (${c.symbol.toUpperCase()})`;
 
                 if (c.image) {
                     const img = document.createElement("img");

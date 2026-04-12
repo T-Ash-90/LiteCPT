@@ -1,0 +1,13 @@
+{
+  "name": "LiteCPT",
+  "version": "1.0.0",
+  "main": "init.js",
+  "scripts": {
+    "start": "electron .",
+    "setup-venv": "python -m venv .venv && .venv/bin/pip install -r requirements.txt",
+    "backend": ".venv/bin/python backend/server.py"
+  },
+  "devDependencies": {
+    "electron": "^41.2.0"
+  }
+}

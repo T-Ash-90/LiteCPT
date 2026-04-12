@@ -1,9 +1,17 @@
+import uvicorn
 import json
-from fastapi.responses import JSONResponse
+from pathlib import Path
 from fastapi import HTTPException, Query
+from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from .config import SERVER, PORTFOLIO_FILE
 from .coins import get_coin_image, get_coin_prices, load_coin_list
+
+#----------------------------------------
+# Serve index.html
+#----------------------------------------
+SERVER.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
 
 #----------------------------------------
 # Load coin list at startup (in-memory cache)

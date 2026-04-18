@@ -37,3 +37,11 @@ td button:hover { background: rgba(255,255,255,0.2); }
 
 .positive { color: var(--success); }
 .negative { color: var(--danger); }
+
+td button.edit-btn {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--primary);
+}
+td button.edit-btn:hover {
+    background: rgba(59, 130, 246, 0.3);
+}

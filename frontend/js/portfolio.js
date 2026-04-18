@@ -1,5 +1,5 @@
 import { fetchPortfolioAPI } from './api.js';
-import { attachRemoveHandlers } from './coins.js';
+import { attachRemoveHandlers, attachEditHandlers } from './coins.js';
 import { createLogger } from './logs.js';
 
 const log = createLogger("PORTFOLIO");
@@ -12,25 +12,29 @@ export async function fetchPortfolio() {
 
     try {
         const data = await fetchPortfolioAPI();
-
         log.info("Portfolio data received", {
             holdingsCount: data?.holdings?.length
         });
 
         renderPortfolio(data);
-
-        log.info("Attaching remove handlers after render");
         attachRemoveHandlers();
+        attachEditHandlers();
 
     } catch (err) {
         log.error("Failed to fetch/render portfolio", err);
-
         if (portfolioTableBody) {
-            portfolioTableBody.innerHTML =
-                "<tr><td colspan='6'>Error loading portfolio.</td></tr>";
+            portfolioTableBody.innerHTML = `
+                <tr>
+                    <td colspan='6' class="error-message">
+                        Error loading portfolio. Please try again later.
+                    </td>
+                </tr>
+            `;
         }
     }
 }
+
+
 
 export function renderPortfolio(data) {
     if (!portfolioTableBody || !portfolioTotal || !currencySelect) {
@@ -77,6 +81,7 @@ export function renderPortfolio(data) {
                 <td>${total}</td>
                 <td class="${change >= 0 ? 'positive' : 'negative'}">${change}%</td>
                 <td>
+                    <button class="edit-btn" data-id="${h.id}">Edit</button>
                     <button class="remove-btn" data-id="${h.id}">Remove</button>
                 </td>
             `;

@@ -1,4 +1,4 @@
-import { addCoinAPI, removeCoinAPI } from './api.js';
+import { addCoinAPI, removeCoinAPI, editCoinAPI } from './api.js';
 import { fetchPortfolio } from './portfolio.js';
 import { selectedCoinId, selectedCoinSymbol } from './search.js';
 import { createLogger } from './logs.js';
@@ -100,5 +100,57 @@ export function attachRemoveHandlers() {
                 alert("Failed to remove coin.");
             }
         });
+    });
+}
+
+export function attachEditHandlers() {
+    log.info("Attaching edit handlers");
+
+    const buttons = document.querySelectorAll(".edit-btn");
+    const modal = document.getElementById("edit-modal");
+    const amountInput = document.getElementById("edit-amount");
+    const cancelBtn = document.getElementById("cancel-edit");
+    const confirmBtn = document.getElementById("confirm-edit");
+
+    if (!buttons.length || !modal || !amountInput || !cancelBtn || !confirmBtn) {
+        log.warn("Edit modal elements not found in DOM");
+        return;
+    }
+
+    let currentCoinId = null;
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const coinId = btn.dataset.id;
+            const row = btn.closest("tr");
+            const amountCell = row.querySelector("td:nth-child(2)");
+            const currentAmount = parseFloat(amountCell.textContent);
+
+            currentCoinId = coinId;
+            amountInput.value = currentAmount;
+            modal.style.display = "flex";
+        });
+    });
+
+    cancelBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    confirmBtn.addEventListener("click", async () => {
+        const newAmount = parseFloat(amountInput.value);
+
+        if (isNaN(newAmount) || newAmount <= 0) {
+            alert("Please enter a valid positive amount");
+            return;
+        }
+
+        try {
+            await editCoinAPI(currentCoinId, newAmount);
+            modal.style.display = "none";
+            fetchPortfolio();
+        } catch (err) {
+            log.error("Edit coin failed", err);
+            alert("Failed to edit coin.");
+        }
     });
 }

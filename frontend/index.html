@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/portfolio.css">
     <link rel="stylesheet" href="css/form.css">
     <link rel="stylesheet" href="css/buttons.css">
+    <link rel="stylesheet" href="css/modal.css">
     <link rel="stylesheet" href="css/search.css">
     <link rel="stylesheet" href="css/animations.css">
 </head>
@@ -46,6 +47,17 @@
                 <tbody></tbody>
             </table>
             <div class="total" id="portfolio-total"></div>
+        </div>
+
+        <div id="edit-modal" class="modal">
+            <div class="modal-content">
+                <h3>Edit Amount</h3>
+                <input type="number" id="edit-amount" step="0.00000001" min="0.00000001">
+                <div class="modal-buttons">
+                    <button id="cancel-edit" class="secondary-btn">Cancel</button>
+                    <button id="confirm-edit" class="primary-btn">Save</button>
+                </div>
+            </div>
         </div>
 
         <!-- Add Coin Form -->

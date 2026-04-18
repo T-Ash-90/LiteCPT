@@ -30,9 +30,12 @@ class CoinAdd(BaseModel):
     symbol: str
     amount: float
 
-
 class CoinRemove(BaseModel):
     id: str
+
+class CoinEdit(BaseModel):
+    id: str
+    amount: float
 
 
 # ----------------------------------------
@@ -165,6 +168,33 @@ def remove_coin(coin: CoinRemove):
 
     save_portfolio(new)
     return {"message": "removed"}
+
+
+# ----------------------------------------
+# Edit holding endpoint
+# ----------------------------------------
+@api.post("/portfolio/edit")
+def edit_coin(coin: CoinEdit):
+    if coin.id not in COIN_IDS:
+        raise HTTPException(status_code=400, detail="Invalid coin id")
+
+    if coin.amount <= 0:
+        raise HTTPException(status_code=400, detail="Amount must be positive")
+
+    holdings = load_portfolio()
+    found = False
+
+    for h in holdings:
+        if h["id"] == coin.id:
+            h["amount"] = coin.amount
+            found = True
+            break
+
+    if not found:
+        raise HTTPException(status_code=404, detail="Coin not found in portfolio")
+
+    save_portfolio(holdings)
+    return {"message": "updated"}
 
 
 # ----------------------------------------

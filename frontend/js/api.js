@@ -81,6 +81,34 @@ export async function removeCoinAPI(id) {
     }
 }
 
+export async function editCoinAPI(id, amount) {
+    const url = `${API_BASE}/portfolio/edit`;
+    const payload = { id, amount };
+
+    log.info("Editing coin", payload);
+
+    try {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            log.error("Edit coin request failed", { status: res.status, payload });
+            throw new Error(`Failed to edit coin: ${res.status}`);
+        }
+
+        const data = await res.json();
+        log.success("Coin edited via API", data);
+
+        return data;
+    } catch (err) {
+        log.error("Edit coin API error", err);
+        throw err;
+    }
+}
+
 export async function searchCoinsAPI(query) {
     const url = `${API_BASE}/coins/search?q=${encodeURIComponent(query)}`;
 

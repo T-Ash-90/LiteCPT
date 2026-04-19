@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const CoinModal = ({
   isOpen,
@@ -12,17 +12,20 @@ const CoinModal = ({
     symbol: '',
     amount: ''
   });
+
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
+    if (!isOpen) return;
+
     if (coin && isEditing) {
       setFormData({
         id: coin.id,
         symbol: coin.symbol,
-        amount: coin.amount
+        amount: coin.amount.toString()
       });
       setSearchQuery(coin.name || '');
     } else {
@@ -32,13 +35,15 @@ const CoinModal = ({
         amount: ''
       });
       setSearchQuery('');
+      setSearchResults([]);
     }
     setError('');
   }, [coin, isEditing, isOpen]);
 
-  const handleSearch = async (query) => {
+  const handleSearch = useCallback(async (query) => {
     setSearchQuery(query);
     setError('');
+
     if (query.length < 2) {
       setSearchResults([]);
       return;
@@ -57,17 +62,17 @@ const CoinModal = ({
     } finally {
       setIsSearching(false);
     }
-  };
+  }, []);
 
-  const handleSelectCoin = (selectedCoin) => {
-    setFormData({
-      ...formData,
+  const handleSelectCoin = useCallback((selectedCoin) => {
+    setFormData(prev => ({
+      ...prev,
       id: selectedCoin.id,
       symbol: selectedCoin.symbol,
-    });
+    }));
     setSearchQuery(selectedCoin.name);
     setSearchResults([]);
-  };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,8 +89,17 @@ const CoinModal = ({
         symbol: formData.symbol,
         amount: parseFloat(formData.amount)
       });
+      setFormData({ id: '', symbol: '', amount: '' });
+      setSearchQuery('');
     } catch (error) {
       setError(error.message || 'An error occurred');
+    }
+  };
+
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+    if (value === '' || /^[0-9]*\.?[0-9]*$/.test(value)) {
+      setFormData(prev => ({ ...prev, amount: value }));
     }
   };
 
@@ -110,9 +124,10 @@ const CoinModal = ({
                 onChange={(e) => handleSearch(e.target.value)}
                 disabled={isEditing}
                 placeholder="Search by name or symbol"
+                autoFocus
               />
               {isSearching && <div className="spinner"></div>}
-              {searchResults.length > 0 && !isEditing && (
+              {!isEditing && searchResults.length > 0 && (
                 <div className="search-results">
                   {searchResults.map((coin) => (
                     <div
@@ -120,7 +135,13 @@ const CoinModal = ({
                       className="search-result-item"
                       onClick={() => handleSelectCoin(coin)}
                     >
-                      <img src={coin.image} alt={coin.name} className="coin-image" />
+                      {coin.image && (
+                        <img
+                          src={coin.image}
+                          alt={coin.name}
+                          className="coin-image"
+                        />
+                      )}
                       <span className="coin-name">{coin.name}</span>
                       <span className="coin-symbol">{coin.symbol.toUpperCase()}</span>
                     </div>
@@ -133,26 +154,28 @@ const CoinModal = ({
           <div className="form-group">
             <label htmlFor="amount">Amount</label>
             <input
-              type="number"
+              type="text"
               id="amount"
               value={formData.amount}
-              onChange={(e) => setFormData({...formData, amount: e.target.value})}
-              step="any"
-              min="0"
-              required
+              onChange={handleAmountChange}
+              inputMode="decimal"
               placeholder="Enter amount"
+              required
             />
           </div>
 
           {error && (
-            <div className="form-group" style={{marginTop: '-10px'}}>
-              <p style={{color: '#c62828', fontSize: '0.9em'}}>{error}</p>
+            <div className="error-message">
+              {error}
             </div>
           )}
 
           <div className="form-actions">
             <button type="button" onClick={onClose}>Cancel</button>
-            <button type="submit" disabled={!formData.id || !formData.amount}>
+            <button
+              type="submit"
+              disabled={!formData.id || !formData.amount || isSearching}
+            >
               {isEditing ? 'Update' : 'Add'} Holding
             </button>
           </div>

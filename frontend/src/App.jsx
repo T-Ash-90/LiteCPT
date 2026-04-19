@@ -1,14 +1,41 @@
 import { useState, useEffect } from 'react';
-import './App.css';
+import './css/App.css';
 import CoinModal from './components/CoinModal';
+import CurrencySelector from './components/CurrencySelector';
+import PortfolioSummary from './components/PortfolioSummary';
+import PortfolioTable from './components/PortfolioTable';
 
 function App() {
   const [portfolio, setPortfolio] = useState([]);
+  const [sortedPortfolio, setSortedPortfolio] = useState([]);
   const [currency, setCurrency] = useState('usd');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingCoin, setEditingCoin] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    const sorted = [...portfolio].sort((a, b) => {
+      const getTotalValue = (holding) => {
+        if (!holding.holding_total) return 0;
+        if (currency === 'usd') return holding.holding_total.usd_total || 0;
+        if (currency === 'eur') return holding.holding_total.eur_total || 0;
+        if (currency === 'gbp') return holding.holding_total.gbp_total || 0;
+        return 0;
+      };
+      return getTotalValue(b) - getTotalValue(a);
+    });
+    setSortedPortfolio(sorted);
+  }, [portfolio, currency]);
+
+  useEffect(() => {
+    const savedCurrency = localStorage.getItem('preferredCurrency');
+    if (savedCurrency) {
+      setCurrency(savedCurrency);
+    }
+    fetchPortfolio();
+  }, []);
 
   const fetchPortfolio = async () => {
     setIsLoading(true);
@@ -29,29 +56,16 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    fetchPortfolio();
-  }, [currency]);
-
   const changeCurrency = (newCurrency) => {
     setCurrency(newCurrency);
     localStorage.setItem('preferredCurrency', newCurrency);
   };
 
-  useEffect(() => {
-    const savedCurrency = localStorage.getItem('preferredCurrency');
-    if (savedCurrency) {
-      setCurrency(savedCurrency);
-    }
-  }, []);
-
   const handleAddHolding = async (holdingData) => {
     try {
       const response = await fetch('http://localhost:8010/api/portfolio/add', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(holdingData),
       });
 
@@ -72,9 +86,7 @@ function App() {
     try {
       const response = await fetch('http://localhost:8010/api/portfolio/edit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(holdingData),
       });
 
@@ -97,9 +109,7 @@ function App() {
     try {
       const response = await fetch('http://localhost:8010/api/portfolio/remove', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: coinId }),
       });
 
@@ -108,42 +118,22 @@ function App() {
         throw new Error(errorData.detail || 'Failed to delete holding');
       }
 
-      await fetchPortfolio();
+      window.location.reload(true);
+
     } catch (error) {
       console.error('Error deleting holding:', error);
       setError(error.message);
     }
   };
 
-  if (isLoading) {
-    return <div className="loading">Loading your portfolio...</div>;
-  }
-
   return (
     <div className="app">
       <header>
-        <h1>LiteCPT</h1>
-        <h3>Crypto Portfolio Tracker</h3>
-        <div className="currency-selector">
-          <button
-            className={currency === 'usd' ? 'active' : ''}
-            onClick={() => changeCurrency('usd')}
-          >
-            USD
-          </button>
-          <button
-            className={currency === 'eur' ? 'active' : ''}
-            onClick={() => changeCurrency('eur')}
-          >
-            EUR
-          </button>
-          <button
-            className={currency === 'gbp' ? 'active' : ''}
-            onClick={() => changeCurrency('gbp')}
-          >
-            GBP
-          </button>
-        </div>
+        <h1>Crypto Portfolio Tracker</h1>
+        <CurrencySelector
+          currency={currency}
+          onChange={changeCurrency}
+        />
       </header>
 
       <main>
@@ -154,20 +144,10 @@ function App() {
           </div>
         )}
 
-        <div className="portfolio-summary">
-          <div className="summary-card">
-            <h3>Portfolio Value</h3>
-            <div className="summary-value">
-              {currency === 'usd' && `$${portfolio.reduce((sum, h) => sum + (h.holding_total?.usd_total || 0), 0).toFixed(2)}`}
-              {currency === 'eur' && `€${portfolio.reduce((sum, h) => sum + (h.holding_total?.eur_total || 0), 0).toFixed(2)}`}
-              {currency === 'gbp' && `£${portfolio.reduce((sum, h) => sum + (h.holding_total?.gbp_total || 0), 0).toFixed(2)}`}
-            </div>
-          </div>
-          <div className="summary-card">
-            <h3>Total Holdings</h3>
-            <div className="summary-value">{portfolio.length}</div>
-          </div>
-        </div>
+        <PortfolioSummary
+          portfolio={portfolio}
+          currency={currency}
+        />
 
         <div className="portfolio-actions">
           <button
@@ -178,69 +158,15 @@ function App() {
           </button>
         </div>
 
-        <div className="portfolio-table">
-          {!isLoading && portfolio.length === 0 && !error ? (
-            <div className="empty-state">
-              <p>No holdings yet. Add your first cryptocurrency holding!</p>
-            </div>
-          ) : (
-            <table>
-              <thead>
-                <tr>
-                  <th>Image</th>
-                  <th>Name</th>
-                  <th>Symbol</th>
-                  <th>Price per unit</th>
-                  <th>Amount</th>
-                  <th>Total Value</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {portfolio.map((holding) => (
-                  <tr key={holding.id}>
-                    <td>
-                      {holding.image && (
-                        <img
-                          src={holding.image}
-                          alt={holding.name}
-                          className="coin-image"
-                        />
-                      )}
-                    </td>
-                    <td>{holding.name}</td>
-                    <td>{holding.symbol.toUpperCase()}</td>
-                    <td>
-                      {currency === 'usd' && `$${holding.price_unit?.usd_unit?.toFixed(2) || '0.00'}`}
-                      {currency === 'eur' && `€${holding.price_unit?.eur_unit?.toFixed(2) || '0.00'}`}
-                      {currency === 'gbp' && `£${holding.price_unit?.gbp_unit?.toFixed(2) || '0.00'}`}
-                    </td>
-                    <td>{holding.amount}</td>
-                    <td>
-                      {currency === 'usd' && `$${holding.holding_total?.usd_total?.toFixed(2) || '0.00'}`}
-                      {currency === 'eur' && `€${holding.holding_total?.eur_total?.toFixed(2) || '0.00'}`}
-                      {currency === 'gbp' && `£${holding.holding_total?.gbp_total?.toFixed(2) || '0.00'}`}
-                    </td>
-                    <td>
-                      <button
-                        className="edit-button"
-                        onClick={() => setEditingCoin(holding)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="delete-button"
-                        onClick={() => handleDeleteHolding(holding.id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+        <PortfolioTable
+          portfolio={sortedPortfolio}
+          currency={currency}
+          onEdit={setEditingCoin}
+          onDelete={handleDeleteHolding}
+          isEmpty={portfolio.length === 0}
+          isLoading={isLoading}
+          error={error}
+        />
       </main>
 
       <CoinModal

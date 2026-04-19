@@ -62,7 +62,8 @@ function createWindow() {
             nodeIntegration: false,
             contextIsolation: true,
             webSecurity: true
-        }
+        },
+        icon: path.join(__dirname, '/frontend/src/assets/images/logo.png'),
     });
 
     mainWindow.loadURL(`http://localhost:${FRONTEND_PORT}`);

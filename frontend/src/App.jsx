@@ -122,7 +122,8 @@ function App() {
   return (
     <div className="app">
       <header>
-        <h1>Crypto Portfolio Tracker</h1>
+        <h1>LiteCPT</h1>
+        <h3>Crypto Portfolio Tracker</h3>
         <div className="currency-selector">
           <button
             className={currency === 'usd' ? 'active' : ''}

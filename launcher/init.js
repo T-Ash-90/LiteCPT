@@ -5,6 +5,7 @@ const fs = require('fs');
 const http = require('http');
 
 let mainWindow;
+let splashWindow = null;
 let pythonProcess = null;
 let viteProcess = null;
 
@@ -31,7 +32,7 @@ function killProcess(proc, name = "process") {
 // ======================================================
 // Wait for Vite to be ready
 // ======================================================
-function waitForViteReady(url, timeout = 20000) {
+function waitForVite(url, timeout = 20000) {
     return new Promise((resolve, reject) => {
         const start = Date.now();
 
@@ -52,7 +53,7 @@ function waitForViteReady(url, timeout = 20000) {
 }
 
 // ======================================================
-// Electron window
+// Create main app window
 // ======================================================
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -63,7 +64,7 @@ function createWindow() {
             contextIsolation: true,
             webSecurity: true
         },
-        icon: path.join(__dirname, '/frontend/src/assets/images/logo.png'),
+        icon: path.join(__dirname, '../frontend/src/assets/images/logo.png'),
     });
 
     mainWindow.loadURL(`http://localhost:${FRONTEND_PORT}`);
@@ -74,14 +75,32 @@ function createWindow() {
 }
 
 // ======================================================
+// Create loading screen window
+// ======================================================
+function createSplashWindow() {
+    splashWindow = new BrowserWindow({
+        width: 400,
+        height: 200,
+        frame: false,
+        alwaysOnTop: true,
+        transparent: true,
+        center: true,
+        icon: path.join(__dirname, '../frontend/src/assets/images/logo.png'),
+    });
+
+    splashWindow.loadFile(path.join(__dirname, 'splash.html'));
+
+    splashWindow.setSkipTaskbar(true);
+}
+
+// ======================================================
 // Start React (Vite)
 // ======================================================
 function startFrontend() {
-    const frontendPath = path.join(__dirname, 'frontend');
+    const frontendPath = path.join(__dirname, '../frontend');
 
     viteProcess = spawn('npm', ['run', 'dev'], {
         cwd: frontendPath,
-        shell: true,
         detached: true,
         stdio: ['ignore', 'pipe', 'pipe']
     });
@@ -101,8 +120,8 @@ function startFrontend() {
 // Start Python backend
 // ======================================================
 function startBackend() {
-    const venvPython = path.join(__dirname, '.venv', 'bin', 'python');
-    const winVenvPython = path.join(__dirname, '.venv', 'Scripts', 'python.exe');
+    const venvPython = path.join(__dirname, '../.venv', 'bin', 'python');
+    const winVenvPython = path.join(__dirname, '../.venv', 'Scripts', 'python.exe');
 
     let pythonPath;
 
@@ -115,8 +134,11 @@ function startBackend() {
         return;
     }
 
-    pythonProcess = spawn(pythonPath, ['-m', 'backend.server'], {
-        cwd: __dirname,
+    const moduleArgs = ['-m', 'backend.server'];
+    const fileArgs = [path.join(__dirname, '../backend/server.py')];
+
+    pythonProcess = spawn(pythonPath, moduleArgs, {
+        cwd: path.join(__dirname, '..'),
         detached: true,
         stdio: ['ignore', 'pipe', 'pipe']
     });
@@ -126,7 +148,18 @@ function startBackend() {
     });
 
     pythonProcess.stderr.on('data', (d) => {
-        console.error(`[PY ERROR] ${d}`);
+        const message = d.toString();
+        if (!message.includes('INFO:')) {
+            console.error(`[PY ERROR] ${message}`);
+        }
+        if (message.includes('No module named')) {
+            pythonProcess.kill();
+            pythonProcess = spawn(pythonPath, fileArgs, {
+                cwd: path.join(__dirname, '..'),
+                detached: true,
+                stdio: ['ignore', 'pipe', 'pipe']
+            });
+        }
     });
 
     pythonProcess.unref();
@@ -148,6 +181,11 @@ function stopAll() {
         pythonProcess = null;
     }
 
+    if (splashWindow) {
+        splashWindow.close();
+        splashWindow = null;
+    }
+
     if (mainWindow) {
         mainWindow.destroy();
         mainWindow = null;
@@ -158,14 +196,26 @@ function stopAll() {
 // App lifecycle
 // ======================================================
 app.whenReady().then(async () => {
+    createSplashWindow();
     startBackend();
     startFrontend();
 
     try {
-        await waitForViteReady(`http://localhost:${FRONTEND_PORT}`);
+        await waitForVite(`http://localhost:${FRONTEND_PORT}`);
+        await new Promise(resolve => setTimeout(resolve, 2500));
+
         createWindow();
+
+        if (splashWindow) {
+            splashWindow.close();
+            splashWindow = null;
+        }
     } catch (err) {
         console.error("Frontend failed to start:", err);
+        if (splashWindow) {
+            splashWindow.close();
+            splashWindow = null;
+        }
     }
 });
 

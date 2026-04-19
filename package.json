@@ -1,7 +1,7 @@
 {
   "name": "LiteCPT",
   "version": "1.0.0",
-  "main": "init.js",
+  "main": "launcher/init.js",
   "scripts": {
     "start": "electron .",
     "setup-venv": "python -m venv .venv && .venv/bin/pip install -r requirements.txt",

@@ -1,0 +1,76 @@
+/* ==========================================================================
+   CSS RESET & BASE STYLES
+   ========================================================================== */
+
+/* Box Sizing Reset
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove Default Margins and Padding
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Base Body Styles
+   ========================================================================== */
+body {
+  /* System Font Stack */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+               Oxygen, Ubuntu, Cantarell, sans-serif;
+
+  /* Colors */
+  background-color: var(--light-gray);
+  color: var(--text-color);
+
+  /* Typography */
+  line-height: 1.5;
+
+  /* Font Rendering */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Remove List Styles
+   ========================================================================== */
+ul, ol {
+  list-style: none;
+}
+
+/* Responsive Images
+   ========================================================================== */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Form Elements
+   ========================================================================== */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* Remove Default Button Styling
+   ========================================================================== */
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Remove Link Underlines
+   ========================================================================== */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Remove Default Focus Outline
+   ========================================================================== */
+*:focus {
+  outline: none;
+}

@@ -1,0 +1,63 @@
+/* ==========================================================================
+   PORTFOLIO SUMMARY COMPONENT STYLES
+   ========================================================================== */
+
+/* Summary Cards Grid Container
+   ========================================================================== */
+.portfolio-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Summary Card Base Styles
+   ========================================================================== */
+.summary-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Summary Card Accent Bar (Left Border)
+   ========================================================================== */
+.summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--primary-color), var(--success-color));
+}
+
+/* Summary Card Hover Effects
+   ========================================================================== */
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Summary Card Title
+   ========================================================================== */
+.summary-card h3 {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Summary Value Display
+   ========================================================================== */
+.summary-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+}

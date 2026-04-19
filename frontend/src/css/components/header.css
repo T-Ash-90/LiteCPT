@@ -1,0 +1,130 @@
+/* ==========================================================================
+   HEADER COMPONENT STYLES
+   ========================================================================== */
+
+/* Main Header Container
+   ========================================================================== */
+.app-header {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+/* Header Content Wrapper
+   ========================================================================== */
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Logo Container
+   ========================================================================== */
+.logo-container {
+  flex: 0 0 auto;
+  margin-right: 1rem;
+}
+
+/* Application Logo
+   ========================================================================== */
+.app-logo {
+  height: 120px;
+  width: auto;
+}
+
+/* Title Container
+   ========================================================================== */
+.title-container {
+  flex: 1;
+  text-align: center;
+}
+
+.title-container h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.title-container h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: normal;
+  color: var(--text-secondary);
+}
+
+/* Currency Selector Component
+   ========================================================================== */
+.currency-selector {
+  display: flex;
+  gap: 0.75rem;
+  background: white;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.currency-selector button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.currency-selector button:hover {
+  background: var(--medium-gray);
+  color: var(--text-color);
+}
+
+.currency-selector button.active {
+  background: var(--primary-color);
+  color: white;
+  box-shadow: 0 2px 4px rgba(67, 97, 238, 0.2);
+}
+
+/* Portfolio Actions Bar
+   ========================================================================== */
+.portfolio-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: var(--max-width);
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+/* Responsive Design
+   ========================================================================== */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .title-container {
+    order: 1;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .currency-selector-container {
+    order: 2;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .logo-container {
+    order: 0;
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+}

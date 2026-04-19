@@ -1,0 +1,93 @@
+/* ==========================================================================
+   BUTTON STYLES
+   ========================================================================== */
+
+/* Primary Buttons (Add/Refresh)
+   ========================================================================== */
+.add-button,
+.refresh-button {
+  /* Base styles */
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--box-shadow);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+
+  /* Primary button styles */
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Add Button
+   ========================================================================== */
+.add-button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(67, 97, 238, 0.2);
+}
+
+/* Refresh Button
+   ========================================================================== */
+.refresh-button {
+  margin-left: 1rem;
+}
+
+.refresh-button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(67, 97, 238, 0.2);
+}
+
+/* Disabled State for Primary Buttons
+   ========================================================================== */
+.add-button:disabled,
+.refresh-button:disabled {
+  background: var(--medium-gray);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Secondary Buttons (Edit/Delete)
+   ========================================================================== */
+.edit-button,
+.delete-button {
+  padding: 0.5rem 1rem;
+  background: white;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+/* Edit Button
+   ========================================================================== */
+.edit-button {
+  margin-right: 0.5rem;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.edit-button:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* Delete Button
+   ========================================================================== */
+.delete-button {
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color);
+}
+
+.delete-button:hover {
+  background: var(--danger-color);
+  color: white;
+  transform: translateY(-1px);
+}

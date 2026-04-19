@@ -1,0 +1,107 @@
+/* ==========================================================================
+   UTILITY CLASSES & ANIMATIONS
+   ========================================================================== */
+
+/* Animations
+   ========================================================================== */
+
+/* Fade In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal Slide Up Animation */
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Spinning Animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Layout Utilities
+   ========================================================================== */
+
+/* Main Application Container */
+.app {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem;
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Loading State
+   ========================================================================== */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+/* Spinner Component
+   ========================================================================== */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Modal Buttons
+   ========================================================================== */
+.modal-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.95rem;
+}
+
+/* Secondary Button Variant */
+.modal-button.secondary {
+  background: white;
+  border: 1px solid var(--medium-gray);
+  color: var(--text-color);
+}
+
+.modal-button.secondary:hover {
+  background: var(--light-gray);
+}
+
+/* Primary Button Variant */
+.modal-button.primary {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 6px -1px rgba(67, 97, 238, 0.1),
+              0 2px 4px -1px rgba(67, 97, 238, 0.06);
+}
+
+.modal-button.primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}

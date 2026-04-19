@@ -1,0 +1,208 @@
+/* ==========================================================================
+   MODAL COMPONENT STYLES
+   ========================================================================== */
+
+/* Modal Overlay (Backdrop)
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+/* Modal Container
+   ========================================================================== */
+.modal {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  position: relative;
+  padding: 0;
+  animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Modal Header
+   ========================================================================== */
+.modal-header {
+  padding: 1.5rem 1.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--medium-gray);
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+}
+
+/* Modal Close Button
+   ========================================================================== */
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.modal-close:hover {
+  background: var(--light-gray);
+  color: var(--text-color);
+}
+
+/* Modal Body
+   ========================================================================== */
+.modal-body {
+  padding: 1.5rem;
+}
+
+/* Modal Footer
+   ========================================================================== */
+.modal-footer {
+  padding: 1rem 1.5rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  background: white;
+  border-top: 1px solid var(--medium-gray);
+  position: sticky;
+  bottom: 0;
+}
+
+/* Form Elements
+   ========================================================================== */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--medium-gray);
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: var(--transition);
+  background: var(--light-gray);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+/* Search Components
+   ========================================================================== */
+.search-container {
+  position: relative;
+}
+
+.search-results {
+  position: absolute;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid var(--medium-gray);
+  border-radius: 10px;
+  margin-top: 0.5rem;
+  z-index: 1001;
+  box-shadow: var(--box-shadow);
+}
+
+.search-result-item {
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.search-result-item:hover {
+  background: var(--light-gray);
+}
+
+.search-result-item .coin-image {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.75rem;
+}
+
+.search-result-item .coin-name {
+  flex-grow: 1;
+}
+
+.search-result-item .coin-symbol {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+/* Error Message Styling
+   ========================================================================== */
+.error-message {
+  color: var(--danger-color);
+  padding: 0.75rem;
+  background: rgba(255, 59, 48, 0.05);
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Responsive Design
+   ========================================================================== */
+@media (max-width: 600px) {
+  .modal {
+    max-width: 95%;
+    border-radius: 16px;
+  }
+
+  .modal-header {
+    padding: 1.25rem 1.25rem 1rem;
+  }
+
+  .modal-body {
+    padding: 1.25rem;
+  }
+
+  .modal-footer {
+    padding: 1rem 1.25rem 1.25rem;
+    flex-direction: column-reverse;
+  }
+
+  .modal-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

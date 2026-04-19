@@ -1,0 +1,119 @@
+/* ==========================================================================
+   PORTFOLIO TABLE COMPONENT STYLES
+   ========================================================================== */
+
+/* Table Container
+   ========================================================================== */
+.portfolio-table {
+  background: white;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+}
+
+/* Base Table Styles
+   ========================================================================== */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Table Cell and Header Base Styles
+   ========================================================================== */
+th, td {
+  padding: 1rem 1.2rem;
+  text-align: left;
+}
+
+/* Table Header Styles
+   ========================================================================== */
+th {
+  background-color: var(--light-gray);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+/* Rounded Corners for First Header Cell
+   ========================================================================== */
+th:first-child {
+  border-top-left-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
+}
+
+/* Rounded Corners for Last Header Cell
+   ========================================================================== */
+th:last-child {
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
+
+/* Row Bottom Border
+   ========================================================================== */
+tr:not(:last-child) td {
+  border-bottom: 1px solid var(--medium-gray);
+}
+
+/* Coin Image Styling
+   ========================================================================== */
+.coin-image {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Change Cell Styling
+   ========================================================================== */
+.change-cell {
+  font-weight: 500;
+  text-align: right;
+}
+
+/* Positive Change Styling
+   ========================================================================== */
+.change-cell.positive {
+  color: var(--success-color);
+}
+
+/* Negative Change Styling
+   ========================================================================== */
+.change-cell.negative {
+  color: var(--danger-color);
+}
+
+/* Numeric Columns Alignment
+   ========================================================================== */
+.portfolio-table td:nth-child(4),
+.portfolio-table td:nth-child(5),
+.portfolio-table td:nth-child(6),
+.portfolio-table td:nth-child(7) {
+  text-align: right;
+}
+
+.portfolio-table th:nth-child(4),
+.portfolio-table th:nth-child(5),
+.portfolio-table th:nth-child(6),
+.portfolio-table th:nth-child(7) {
+  text-align: right;
+}
+
+/* Empty State Styling
+   ========================================================================== */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: var(--border-radius);
+  color: var(--text-secondary);
+}
+
+.empty-state svg {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 1.5rem;
+  color: var(--medium-gray);
+}

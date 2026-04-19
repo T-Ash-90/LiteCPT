@@ -1,18 +1,52 @@
-tests/
-cache/
-data/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules/
+dist/
+dist-ssr/
+*.local
+*.desktop
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+
+# Python
 __pycache__/
-*.pyc
 *.py[cod]
 *.pyo
-*.desktop
+*.pyd
+.python-version
 venv/
-.env/
 .venv/
-.vscode/
-.DS_Store
-*.swp
-*.log
-*.bin
-node_modules/
+env/
+.env/
+.env.local
+.env.*.local
+
+# Project files
 portfolio.json
+cache/
+data/
+tests/
+
+# Binaries
+*.bin
+*.exe
+*.out
+*.app

@@ -1,8 +1,10 @@
+# backend/server.py
 import uvicorn
 import json
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from .config import PORTFOLIO_FILE
@@ -16,6 +18,14 @@ from .coins import (
 # App
 # ----------------------------------------
 api = FastAPI()
+
+api.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 COIN_INDEX = load_coin_index()
 COIN_IDS = {c["id"] for c in COIN_INDEX}

@@ -118,6 +118,21 @@ header {
   box-shadow: var(--box-shadow);
 }
 
+.portfolio-table td:nth-child(4), /* Price */
+.portfolio-table td:nth-child(5), /* Holding Amount */
+.portfolio-table td:nth-child(6), /* Holding Value */
+.portfolio-table td:nth-child(7)  /* 24h Change */ {
+  text-align: right;
+}
+
+.portfolio-table th:nth-child(4),
+.portfolio-table th:nth-child(5),
+.portfolio-table th:nth-child(6),
+.portfolio-table th:nth-child(7) {
+  text-align: right;
+}
+
+
 table {
   width: 100%;
   border-collapse: separate;
@@ -192,6 +207,19 @@ tr:not(:last-child) td {
   background: var(--danger-color);
   color: white;
   transform: translateY(-1px);
+}
+
+.change-cell {
+  font-weight: 500;
+  text-align: right;
+}
+
+.change-cell.positive {
+  color: var(--success-color);
+}
+
+.change-cell.negative {
+  color: var(--danger-color);
 }
 
 :root {
@@ -958,4 +986,79 @@ tr:not(:last-child) td {
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+.app-header {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.logo-container {
+  flex: 0 0 auto;
+  margin-right: 1rem;
+}
+
+.app-logo {
+  height: 120px;
+  width: auto;
+}
+
+.title-container {
+  flex: 1;
+  text-align: center;
+}
+
+.title-container h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.title-container h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: normal;
+  color: var(--text-secondary);
+}
+
+.currency-selector-container {
+  flex: 0 0 auto;
+  margin-left: 1rem;
+}
+
+/* For smaller screens */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .title-container {
+    order: 1;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .currency-selector-container {
+    order: 2;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .logo-container {
+    order: 0;
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
 }

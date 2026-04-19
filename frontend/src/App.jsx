@@ -5,6 +5,7 @@ import CoinModal from './components/CoinModal';
 import CurrencySelector from './components/CurrencySelector';
 import PortfolioSummary from './components/PortfolioSummary';
 import PortfolioTable from './components/PortfolioTable';
+import logo from './assets/images/logo.png';
 
 function App() {
   const [portfolio, setPortfolio] = useState([]);
@@ -142,7 +143,6 @@ function App() {
               throw new Error(errorData.detail || 'Failed to refresh prices');
           }
 
-          // Refresh the portfolio data
           await fetchPortfolio();
       } catch (error) {
           console.error('Error refreshing prices:', error);
@@ -154,12 +154,24 @@ function App() {
 
   return (
     <div className="app">
-      <header>
-        <h1>Crypto Portfolio Tracker</h1>
-        <CurrencySelector
-          currency={currency}
-          onChange={changeCurrency}
-        />
+      <header className="app-header">
+        <div className="header-content">
+          <div className="logo-container">
+            <img
+              src={logo}
+              alt="Lite CPT Logo"
+              className="app-logo"
+            />
+          </div>
+          <div className="title-container">
+            <h1>Lite CPT</h1>
+            <h3>Crypto Portfolio Tracker</h3>
+          </div>
+          <CurrencySelector
+            currency={currency}
+            onChange={changeCurrency}
+          />
+        </div>
       </header>
 
       <main>
@@ -187,7 +199,7 @@ function App() {
               onClick={handleRefreshPrices}
               disabled={refreshing}
           >
-              {refreshing ? 'Refreshing...' : 'Refresh Prices'}
+              {refreshing ? 'Refreshing...' : ''}
               <FaSyncAlt className={refreshing ? 'spin' : ''} />
           </button>
         </div>

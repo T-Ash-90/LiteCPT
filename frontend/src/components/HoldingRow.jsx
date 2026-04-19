@@ -29,6 +29,23 @@ const HoldingRow = ({ holding, currency, onEdit, onDelete }) => {
 
   const priceUnit = holding.price_unit || {};
   const holdingTotal = holding.holding_total || {};
+  const priceChange = holding.price_change || {};
+
+  const formatChange = (change) => {
+    if (change === undefined || change === null) return '0.00%';
+    const changeValue = parseFloat(change);
+    const formatted = changeValue.toFixed(2);
+    return `${changeValue >= 0 ? '+' : ''}${formatted}%`;
+  };
+
+  const getChangeValue = () => {
+    if (currency === 'usd') return priceChange.usd_24h_change;
+    if (currency === 'eur') return priceChange.eur_24h_change;
+    if (currency === 'gbp') return priceChange.gbp_24h_change;
+    return 0;
+  };
+
+  const changeClass = getChangeValue() >= 0 ? 'positive' : 'negative';
 
   return (
     <tr>
@@ -57,6 +74,9 @@ const HoldingRow = ({ holding, currency, onEdit, onDelete }) => {
           currency === 'eur' ? holdingTotal.eur_total :
           holdingTotal.gbp_total
         )}
+      </td>
+      <td className={`change-cell ${changeClass}`}>
+        {formatChange(getChangeValue())}
       </td>
       <td>
         <button

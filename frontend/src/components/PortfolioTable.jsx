@@ -33,6 +33,7 @@ const PortfolioTable = ({
             <th>Price</th>
             <th>Holding Amount</th>
             <th>Holding Value</th>
+            <th>24h Change</th>
             <th>Actions</th>
           </tr>
         </thead>

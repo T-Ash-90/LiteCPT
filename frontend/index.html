@@ -1,83 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LiteCPT Crypto Portfolio</title>
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/card.css">
-    <link rel="stylesheet" href="css/portfolio.css">
-    <link rel="stylesheet" href="css/form.css">
-    <link rel="stylesheet" href="css/buttons.css">
-    <link rel="stylesheet" href="css/modal.css">
-    <link rel="stylesheet" href="css/search.css">
-    <link rel="stylesheet" href="css/animations.css">
-</head>
-<body>
-    <div class="container">
-        <h1>LiteCPT</h1>
-        <h3>Crypto Portfolio Tracker</h3>
-
-        <!-- Portfolio Header -->
-        <div class="portfolio-header">
-            <div class="currency-selector">
-                <span>Display currency:</span>
-                <select id="currency-select">
-                    <option value="usd">USD</option>
-                    <option value="eur">EUR</option>
-                    <option value="gbp">GBP</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Portfolio Table -->
-        <div class="card">
-            <table id="portfolio-table">
-                <thead>
-                    <tr>
-                        <th>Coin</th>
-                        <th>Amount</th>
-                        <th>Price per Unit</th>
-                        <th>Total Value</th>
-                        <th>24h Change</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <div class="total" id="portfolio-total"></div>
-        </div>
-
-        <div id="edit-modal" class="modal">
-            <div class="modal-content">
-                <h3>Edit Amount</h3>
-                <input type="number" id="edit-amount" step="0.00000001" min="0.00000001">
-                <div class="modal-buttons">
-                    <button id="cancel-edit" class="secondary-btn">Cancel</button>
-                    <button id="confirm-edit" class="primary-btn">Save</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Add Coin Form -->
-        <div class="card">
-            <h2>Add Coin</h2>
-            <div class="form">
-                <div class="form-group search-container">
-                    <label for="coin-search">Coin</label>
-                    <input type="text" id="coin-search" placeholder="Search coin...">
-                    <div class="search-results" id="search-results"></div>
-                </div>
-                <div class="form-group amount-container">
-                    <label for="amount">Amount</label>
-                    <input type="number" id="amount" placeholder="0.0" step="any">
-                </div>
-                <button class="primary-btn" id="add-coin-btn">Add</button>
-            </div>
-        </div>
-    </div>
-
-    <script type="module" src="js/main.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frontend</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

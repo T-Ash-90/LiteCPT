@@ -236,7 +236,6 @@ def search(q: str = Query(..., min_length=1)):
 # Frontend
 # ----------------------------------------
 api.mount("/api", api)
-api.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
 
 
 # ----------------------------------------

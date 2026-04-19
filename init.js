@@ -2,107 +2,181 @@ const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
+const http = require('http');
 
 let mainWindow;
-let pythonProcess;
+let pythonProcess = null;
+let viteProcess = null;
 
+const FRONTEND_PORT = 5173;
 
-// Create Electron app window
+// ======================================================
+// Kill process tree safely
+// ======================================================
+function killProcess(proc, name = "process") {
+    if (!proc || proc.killed) return;
+
+    try {
+        if (process.platform === "win32") {
+            spawn("taskkill", ["/pid", proc.pid, "/f", "/t"]);
+        } else {
+            process.kill(-proc.pid, "SIGTERM");
+        }
+        console.log(`Killed ${name} (pid ${proc.pid})`);
+    } catch (err) {
+        console.warn(`Failed to kill ${name}:`, err.message);
+    }
+}
+
+// ======================================================
+// Wait for Vite to be ready
+// ======================================================
+function waitForViteReady(url, timeout = 20000) {
+    return new Promise((resolve, reject) => {
+        const start = Date.now();
+
+        const check = () => {
+            http.get(url, (res) => {
+                resolve(true);
+            }).on('error', () => {
+                if (Date.now() - start > timeout) {
+                    reject(new Error("Vite not ready"));
+                } else {
+                    setTimeout(check, 300);
+                }
+            });
+        };
+
+        check();
+    });
+}
+
+// ======================================================
+// Electron window
+// ======================================================
 function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1200,
         height: 800,
-        icon: path.join(__dirname, '/frontend/assets/images/logo.png'),
         webPreferences: {
-          nodeIntegration: true,
-          contextIsolation: false,
-          webSecurity: true
-      }
+            nodeIntegration: false,
+            contextIsolation: true,
+            webSecurity: true
+        }
     });
 
-    mainWindow.loadFile(path.join(__dirname, 'frontend', 'index.html'));
+    mainWindow.loadURL(`http://localhost:${FRONTEND_PORT}`);
+
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
 }
 
+// ======================================================
+// Start React (Vite)
+// ======================================================
+function startFrontend() {
+    const frontendPath = path.join(__dirname, 'frontend');
 
-// Start backend
+    viteProcess = spawn('npm', ['run', 'dev'], {
+        cwd: frontendPath,
+        shell: true,
+        detached: true,
+        stdio: ['ignore', 'pipe', 'pipe']
+    });
+
+    viteProcess.stdout.on('data', (d) => {
+        console.log(`[VITE] ${d}`);
+    });
+
+    viteProcess.stderr.on('data', (d) => {
+        console.error(`[VITE ERROR] ${d}`);
+    });
+
+    viteProcess.unref();
+}
+
+// ======================================================
+// Start Python backend
+// ======================================================
 function startBackend() {
     const venvPython = path.join(__dirname, '.venv', 'bin', 'python');
     const winVenvPython = path.join(__dirname, '.venv', 'Scripts', 'python.exe');
-    const serverPath = path.join(__dirname, 'backend', 'server.py');
 
     let pythonPath;
-    if (fs.existsSync(venvPython)) {
-        pythonPath = venvPython; // macOS/Linux
-    } else if (fs.existsSync(winVenvPython)) {
-        pythonPath = winVenvPython; // Windows
-    } else {
-        console.error('Virtual environment not found in root directory.');
-        console.error('Please run from project root: python -m venv .venv');
-        console.error('Then install dependencies with: .venv/bin/pip install -r requirements.txt');
-        return;
-    }
 
-    if (!fs.existsSync(serverPath)) {
-        console.error('Backend server not found at:', serverPath);
+    if (fs.existsSync(venvPython)) {
+        pythonPath = venvPython;
+    } else if (fs.existsSync(winVenvPython)) {
+        pythonPath = winVenvPython;
+    } else {
+        console.error("No virtualenv found");
         return;
     }
 
     pythonProcess = spawn(pythonPath, ['-m', 'backend.server'], {
-        cwd: path.join(__dirname)
+        cwd: __dirname,
+        detached: true,
+        stdio: ['ignore', 'pipe', 'pipe']
     });
 
-    pythonProcess.stdout.on('data', (data) => {
-        console.log(`Backend: ${data}`);
+    pythonProcess.stdout.on('data', (d) => {
+        console.log(`[PY] ${d}`);
     });
 
-    pythonProcess.stderr.on('data', (data) => {
-        console.error(`Backend error: ${data}`);
+    pythonProcess.stderr.on('data', (d) => {
+        console.error(`[PY ERROR] ${d}`);
     });
 
-    pythonProcess.on('close', (code) => {
-        console.log(`Backend process exited with code ${code}`);
-    });
-
-    pythonProcess.stdout.on('data', (data) => {
-    console.log(`Backend: ${data}`);
-    if (data.toString().includes('Application startup complete')) {
-        if (mainWindow) {
-            mainWindow.webContents.reload();
-        } else {
-            createWindow();
-        }
-      }
-    });
-
+    pythonProcess.unref();
 }
 
+// ======================================================
+// Stop all processes
+// ======================================================
+function stopAll() {
+    console.log("Shutting down processes...");
 
-// Stop backend
-function stopBackend() {
+    if (viteProcess) {
+        killProcess(viteProcess, "Vite");
+        viteProcess = null;
+    }
+
     if (pythonProcess) {
-        pythonProcess.kill();
+        killProcess(pythonProcess, "Python backend");
         pythonProcess = null;
+    }
+
+    if (mainWindow) {
+        mainWindow.destroy();
+        mainWindow = null;
     }
 }
 
-
+// ======================================================
 // App lifecycle
-app.whenReady().then(() => {
+// ======================================================
+app.whenReady().then(async () => {
     startBackend();
-    setTimeout(() => {
+    startFrontend();
+
+    try {
+        await waitForViteReady(`http://localhost:${FRONTEND_PORT}`);
         createWindow();
-    }, 3000);
+    } catch (err) {
+        console.error("Frontend failed to start:", err);
+    }
 });
 
 app.on('window-all-closed', () => {
-    stopBackend();
+    stopAll();
     if (process.platform !== 'darwin') {
         app.quit();
     }
 });
+
+app.on('before-quit', stopAll);
+app.on('will-quit', stopAll);
 
 app.on('activate', () => {
     if (mainWindow === null) {
@@ -110,6 +184,5 @@ app.on('activate', () => {
     }
 });
 
-app.on('will-quit', () => {
-    stopBackend();
-});
+process.on('SIGINT', stopAll);
+process.on('SIGTERM', stopAll);

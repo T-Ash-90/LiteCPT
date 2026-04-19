@@ -9,7 +9,8 @@ from .config import (
     CACHE_EXPIRY,
     RATE_LIMIT_WINDOW,
     RATE_LIMIT_MAX_CALLS,
-    COIN_INDEX_FILE
+    COIN_INDEX_FILE,
+    TIMEOUT
 )
 
 # ----------------------------------------
@@ -77,7 +78,7 @@ def update_coin_index_coin(coin_id: str, updates: dict):
 def get_coin_list() -> list[dict]:
     check_rate_limit()
     url = f"{COINGECKO_API}/coins/list"
-    r = requests.get(url, timeout=30)
+    r = requests.get(url, timeout=TIMEOUT)
     r.raise_for_status()
     return r.json()
 
@@ -93,7 +94,7 @@ def get_coin_image(coin_id: str) -> str:
     check_rate_limit()
 
     url = f"{COINGECKO_API}/coins/{coin_id}"
-    r = requests.get(url, timeout=10)
+    r = requests.get(url, timeout=TIMEOUT)
     r.raise_for_status()
 
     data = r.json()
@@ -129,10 +130,11 @@ def get_coin_prices(ids: Union[str, List[str]]) -> dict:
         params = {
             "ids": ",".join(ids_to_fetch),
             "vs_currencies": ",".join(CURRENCIES),
-            "include_24hr_change": "true"
+            "include_24hr_change": "true",
+            "precision": 10
         }
 
-        r = requests.get(url, params=params, timeout=10)
+        r = requests.get(url, params=params, timeout=TIMEOUT)
         r.raise_for_status()
         data = r.json()
 
@@ -167,7 +169,7 @@ def build_coin_index() -> list[dict]:
             "sparkline": "false"
         }
 
-        r = requests.get(url, params=params, timeout=20)
+        r = requests.get(url, params=params, timeout=TIMEOUT)
         r.raise_for_status()
         data = r.json()
 

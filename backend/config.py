@@ -23,4 +23,5 @@ CACHE_EXPIRY = 60
 # Rate limiting
 # ----------------------------------------
 RATE_LIMIT_WINDOW = 60
-RATE_LIMIT_MAX_CALLS = 45
+RATE_LIMIT_MAX_CALLS = 30
+TIMEOUT = 15

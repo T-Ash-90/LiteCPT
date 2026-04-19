@@ -3,7 +3,21 @@ import React from 'react';
 const HoldingRow = ({ holding, currency, onEdit, onDelete }) => {
   const formatCurrency = (value) => {
     if (value === undefined || value === null) return '0.00';
-    return value.toFixed(2);
+
+    const absValue = Math.abs(value);
+
+    if (absValue >= 1) {
+      return value.toFixed(2);
+    }
+
+    if (absValue === 0) return '0.00';
+
+    const magnitude = Math.floor(Math.log10(absValue));
+    const scale = Math.pow(10, -magnitude + 1);
+    const scaledValue = Math.round(value * scale) / scale;
+
+    const decimalPlaces = Math.max(0, -magnitude + 1);
+    return scaledValue.toFixed(decimalPlaces);
   };
 
   const getCurrencySymbol = () => {

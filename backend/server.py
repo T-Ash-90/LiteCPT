@@ -1,4 +1,3 @@
-# backend/server.py
 import uvicorn
 import json
 
@@ -243,13 +242,9 @@ def search(q: str = Query(..., min_length=1)):
 
 
 # ----------------------------------------
-# Frontend
+# Run Server
 # ----------------------------------------
 api.mount("/api", api)
 
-
-# ----------------------------------------
-# Run Server
-# ----------------------------------------
 if __name__ == "__main__":
     uvicorn.run(api, host="127.0.0.1", port=8010)

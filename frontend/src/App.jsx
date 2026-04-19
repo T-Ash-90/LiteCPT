@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import './css/App.css';
+import './css/styles.css';
 import CoinModal from './components/CoinModal';
 import CurrencySelector from './components/CurrencySelector';
 import PortfolioSummary from './components/PortfolioSummary';

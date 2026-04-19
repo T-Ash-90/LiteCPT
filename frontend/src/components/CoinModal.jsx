@@ -12,7 +12,6 @@ const CoinModal = ({
     symbol: '',
     amount: ''
   });
-
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -109,77 +108,90 @@ const CoinModal = ({
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>{isEditing ? 'Edit Holding' : 'Add New Holding'}</h2>
-          <button onClick={onClose} className="close-button">&times;</button>
+          <h2 className="modal-title">{isEditing ? 'Edit Holding' : 'Add New Holding'}</h2>
+          <button onClick={onClose} className="modal-close" aria-label="Close modal">
+            &times;
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="coin">Search Coin</label>
-            <div className="search-container">
+        <div className="modal-body">
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="coin">Search Coin</label>
+              <div className="search-container">
+                <input
+                  type="text"
+                  id="coin"
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  disabled={isEditing}
+                  placeholder="Search by name or symbol"
+                  autoFocus
+                  className="form-control"
+                />
+                {isSearching && <div className="spinner"></div>}
+                {!isEditing && searchResults.length > 0 && (
+                  <div className="search-results">
+                    {searchResults.map((coin) => (
+                      <div
+                        key={coin.id}
+                        className="search-result-item"
+                        onClick={() => handleSelectCoin(coin)}
+                      >
+                        {coin.image && (
+                          <img
+                            src={coin.image}
+                            alt={coin.name}
+                            className="coin-image"
+                          />
+                        )}
+                        <span className="coin-name">{coin.name}</span>
+                        <span className="coin-symbol">{coin.symbol.toUpperCase()}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="amount">Amount</label>
               <input
                 type="text"
-                id="coin"
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
-                disabled={isEditing}
-                placeholder="Search by name or symbol"
-                autoFocus
+                id="amount"
+                value={formData.amount}
+                onChange={handleAmountChange}
+                inputMode="decimal"
+                placeholder="Enter amount"
+                required
+                className="form-control"
               />
-              {isSearching && <div className="spinner"></div>}
-              {!isEditing && searchResults.length > 0 && (
-                <div className="search-results">
-                  {searchResults.map((coin) => (
-                    <div
-                      key={coin.id}
-                      className="search-result-item"
-                      onClick={() => handleSelectCoin(coin)}
-                    >
-                      {coin.image && (
-                        <img
-                          src={coin.image}
-                          alt={coin.name}
-                          className="coin-image"
-                        />
-                      )}
-                      <span className="coin-name">{coin.name}</span>
-                      <span className="coin-symbol">{coin.symbol.toUpperCase()}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
-          </div>
 
-          <div className="form-group">
-            <label htmlFor="amount">Amount</label>
-            <input
-              type="text"
-              id="amount"
-              value={formData.amount}
-              onChange={handleAmountChange}
-              inputMode="decimal"
-              placeholder="Enter amount"
-              required
-            />
-          </div>
+            {error && (
+              <div className="error-message">
+                {error}
+              </div>
+            )}
 
-          {error && (
-            <div className="error-message">
-              {error}
+            <div className="modal-footer">
+              <button
+                type="button"
+                onClick={onClose}
+                className="modal-button secondary"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={!formData.id || !formData.amount || isSearching}
+                className="modal-button primary"
+              >
+                {isEditing ? 'Update' : 'Add'} Holding
+              </button>
             </div>
-          )}
-
-          <div className="form-actions">
-            <button type="button" onClick={onClose}>Cancel</button>
-            <button
-              type="submit"
-              disabled={!formData.id || !formData.amount || isSearching}
-            >
-              {isEditing ? 'Update' : 'Add'} Holding
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

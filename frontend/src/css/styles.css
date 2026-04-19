@@ -286,25 +286,47 @@ header {
 }
 
 .portfolio-actions {
-  margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+.add-button, .refresh-button {
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--box-shadow);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
 }
 
 .add-button {
-  padding: 0.8rem 1.5rem;
-  background: var(--success-color);
-  color: white;
-  border: none;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-  box-shadow: var(--box-shadow);
+    background: var(--primary-color);
+    color: white;
 }
 
-.add-button:hover {
-  background: var(--success-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(52, 199, 89, 0.2);
+.refresh-button {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.add-button:hover, .refresh-button:hover {
+    transform: translateY(-2px);
+}
+
+.add-button:disabled, .refresh-button:disabled {
+    background: var(--medium-gray);
+    cursor: not-allowed;
+    transform: none;
 }
 
 .portfolio-table {
@@ -896,4 +918,44 @@ tr:not(:last-child) td {
   height: 120px;
   margin-bottom: 1.5rem;
   color: var(--medium-gray);
+}
+
+.refresh-button {
+    padding: 0.8rem 1.5rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--box-shadow);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
+.refresh-button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.refresh-button:disabled {
+    background: var(--medium-gray);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.refresh-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }

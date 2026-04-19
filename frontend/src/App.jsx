@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { FaSyncAlt } from 'react-icons/fa';
 import './css/styles.css';
 import CoinModal from './components/CoinModal';
 import CurrencySelector from './components/CurrencySelector';
@@ -14,6 +15,7 @@ function App() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingCoin, setEditingCoin] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     const sorted = [...portfolio].sort((a, b) => {
@@ -41,7 +43,7 @@ function App() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:8010/api/portfolio');
+      const response = await fetch('http://localhost:8010/portfolio');
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.detail || 'Network response was not ok');
@@ -63,7 +65,7 @@ function App() {
 
   const handleAddHolding = async (holdingData) => {
     try {
-      const response = await fetch('http://localhost:8010/api/portfolio/add', {
+      const response = await fetch('http://localhost:8010/portfolio/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(holdingData),
@@ -84,7 +86,7 @@ function App() {
 
   const handleEditHolding = async (holdingData) => {
     try {
-      const response = await fetch('http://localhost:8010/api/portfolio/edit', {
+      const response = await fetch('http://localhost:8010/portfolio/edit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(holdingData),
@@ -107,7 +109,7 @@ function App() {
     if (!window.confirm('Are you sure you want to delete this holding?')) return;
 
     try {
-      const response = await fetch('http://localhost:8010/api/portfolio/remove', {
+      const response = await fetch('http://localhost:8010/portfolio/remove', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: coinId }),
@@ -124,6 +126,30 @@ function App() {
       console.error('Error deleting holding:', error);
       setError(error.message);
     }
+  };
+
+  const handleRefreshPrices = async () => {
+      setRefreshing(true);
+      setError(null);
+      try {
+          const response = await fetch('http://localhost:8010/portfolio/refresh', {
+              method: 'GET',
+              headers: { 'Content-Type': 'application/json' },
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.detail || 'Failed to refresh prices');
+          }
+
+          // Refresh the portfolio data
+          await fetchPortfolio();
+      } catch (error) {
+          console.error('Error refreshing prices:', error);
+          setError(error.message);
+      } finally {
+          setRefreshing(false);
+      }
   };
 
   return (
@@ -155,6 +181,14 @@ function App() {
             onClick={() => setShowAddModal(true)}
           >
             + Add Holding
+          </button>
+          <button
+              className="refresh-button"
+              onClick={handleRefreshPrices}
+              disabled={refreshing}
+          >
+              {refreshing ? 'Refreshing...' : 'Refresh Prices'}
+              <FaSyncAlt className={refreshing ? 'spin' : ''} />
           </button>
         </div>
 

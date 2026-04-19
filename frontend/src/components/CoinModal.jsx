@@ -50,7 +50,7 @@ const CoinModal = ({
 
     setIsSearching(true);
     try {
-      const response = await fetch(`http://localhost:8010/api/coins/search?q=${encodeURIComponent(query)}`);
+      const response = await fetch(`http://localhost:8010/coins/search?q=${encodeURIComponent(query)}`);
       if (!response.ok) throw new Error('Search failed');
       const data = await response.json();
       setSearchResults(data.results || []);

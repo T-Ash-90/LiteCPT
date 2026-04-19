@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from .config import PORTFOLIO_FILE
+from .config import PORTFOLIO_FILE, PRICE_CACHE
 from .coins import (
     get_coin_prices,
     load_coin_index,
@@ -133,6 +133,29 @@ def portfolio():
 
 
 # ----------------------------------------
+# Refresh endpoint
+# ----------------------------------------
+@api.get("/portfolio/refresh")
+def refresh_prices():
+    try:
+        holdings = load_portfolio()
+        coin_ids = [h["id"] for h in holdings]
+
+        PRICE_CACHE.clear()
+
+        prices = get_coin_prices(coin_ids)
+
+        return {
+            "message": "Prices refreshed successfully",
+            "prices": prices
+        }
+    except Exception as e:
+        if "rate limit" in str(e).lower():
+            raise HTTPException(status_code=429, detail="Rate limit reached")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ----------------------------------------
 # Add coin endpoint
 # ----------------------------------------
 @api.post("/portfolio/add")
@@ -244,7 +267,5 @@ def search(q: str = Query(..., min_length=1)):
 # ----------------------------------------
 # Run Server
 # ----------------------------------------
-api.mount("/api", api)
-
 if __name__ == "__main__":
     uvicorn.run(api, host="127.0.0.1", port=8010)

@@ -27,12 +27,12 @@ const PortfolioTable = ({
       <table>
         <thead>
           <tr>
-            <th>Image</th>
+            <th>Logo</th>
             <th>Name</th>
-            <th>Symbol</th>
-            <th>Price per unit</th>
-            <th>Amount</th>
-            <th>Total Value</th>
+            <th>Ticker</th>
+            <th>Price</th>
+            <th>Holding Amount</th>
+            <th>Holding Value</th>
             <th>Actions</th>
           </tr>
         </thead>

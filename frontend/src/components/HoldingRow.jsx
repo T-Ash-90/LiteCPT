@@ -7,7 +7,10 @@ const HoldingRow = ({ holding, currency, onEdit, onDelete }) => {
     const absValue = Math.abs(value);
 
     if (absValue >= 1) {
-      return value.toFixed(2);
+      return value.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
     }
 
     if (absValue === 0) return '0.00';

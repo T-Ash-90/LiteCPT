@@ -12,10 +12,10 @@ const PortfolioSummary = ({ portfolio, currency }) => {
   };
 
   const formatCurrency = (value) => {
-    if (currency === 'usd') return `$${value.toFixed(2)}`;
-    if (currency === 'eur') return `€${value.toFixed(2)}`;
-    if (currency === 'gbp') return `£${value.toFixed(2)}`;
-    return value.toFixed(2);
+    if (currency === 'usd') return `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (currency === 'eur') return `€${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (currency === 'gbp') return `£${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
   return (

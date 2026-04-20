@@ -63,7 +63,7 @@
 
 .delete-button {
   padding: 0.2rem 0.6rem;
-  background: var(--danger-color);
+  background: var(--warning-color);
   border-radius: 8px;
   font-weight: 360;
   cursor: pointer;
@@ -75,12 +75,12 @@
 .edit-button {
   margin-right: 0.5rem;
   color: white;
-  border: 1px solid var(--primary-color);
+  border: 1px solid var(--primary-hover);
 }
 
 .edit-button:hover {
   background: white;
-  color: var(--primary-color);
+  color: var(--primary-hover);
 }
 
 /* Delete Button

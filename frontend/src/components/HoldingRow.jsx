@@ -86,13 +86,13 @@ const HoldingRow = ({ holding, currency, onEdit, onDelete }) => {
           className="edit-button"
           onClick={() => onEdit(holding)}
         >
-          Edit
+          🔧
         </button>
         <button
           className="delete-button"
           onClick={() => onDelete(holding.id)}
         >
-          Remove
+          ❌
         </button>
       </td>
     </tr>

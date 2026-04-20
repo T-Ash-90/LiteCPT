@@ -7,9 +7,9 @@
 .add-button,
 .refresh-button {
   /* Base styles */
-  padding: 0.8rem 1.5rem;
+  padding: 0.25rem 1.5rem;
   border-radius: var(--border-radius);
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
   transition: var(--transition);
   box-shadow: var(--box-shadow);
@@ -27,7 +27,6 @@
    ========================================================================== */
 .add-button:hover {
   background: var(--primary-hover);
-  transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(67, 97, 238, 0.2);
 }
 
@@ -39,7 +38,6 @@
 
 .refresh-button:hover {
   background: var(--primary-hover);
-  transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(67, 97, 238, 0.2);
 }
 
@@ -49,18 +47,25 @@
 .refresh-button:disabled {
   background: var(--medium-gray);
   cursor: not-allowed;
-  transform: none;
   box-shadow: none;
 }
 
 /* Secondary Buttons (Edit/Delete)
    ========================================================================== */
-.edit-button,
+.edit-button {
+  padding: 0.5rem 1rem;
+  background: var(--primary-color);
+  border-radius: 8px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
 .delete-button {
   padding: 0.5rem 1rem;
-  background: white;
+  background: var(--danger-color);
   border-radius: 8px;
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
   transition: var(--transition);
 }
@@ -69,25 +74,23 @@
    ========================================================================== */
 .edit-button {
   margin-right: 0.5rem;
-  color: var(--primary-color);
+  color: white;
   border: 1px solid var(--primary-color);
 }
 
 .edit-button:hover {
-  background: var(--primary-color);
-  color: white;
-  transform: translateY(-1px);
+  background: white;
+  color: var(--primary-color);
 }
 
 /* Delete Button
    ========================================================================== */
 .delete-button {
-  color: var(--danger-color);
+  color: white;
   border: 1px solid var(--danger-color);
 }
 
 .delete-button:hover {
-  background: var(--danger-color);
-  color: white;
-  transform: translateY(-1px);
+  background: white;
+  color: var(--danger-color);
 }

@@ -15,7 +15,7 @@
    ========================================================================== */
 .summary-card {
   background: white;
-  padding: 1.5rem;
+  padding: 1rem;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   transition: var(--transition);
@@ -38,7 +38,6 @@
 /* Summary Card Hover Effects
    ========================================================================== */
 .summary-card:hover {
-  transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 

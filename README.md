@@ -53,7 +53,7 @@ A simple, responsive electron app to track your cryptocurrency holdings in real-
 1. Clone the repository:
 
 ```bash
-git clone <your-repo-url>
+git clone 
 ```
 2. Create a virtual Python environment named .venv in the root directory: (required)
 

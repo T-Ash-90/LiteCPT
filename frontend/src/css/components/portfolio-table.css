@@ -95,8 +95,25 @@ tr:not(:last-child) td {
   color: var(--danger-color);
 }
 
-/* Numeric Columns Alignment
-   ========================================================================== */
+/* Columns Alignment
+========================================================================== */
+.portfolio-table th:nth-child(1),
+.portfolio-table th:nth-child(2),
+.portfolio-table th:nth-child(3),
+.portfolio-table th:nth-child(4),
+.portfolio-table th:nth-child(5),
+.portfolio-table th:nth-child(6),
+.portfolio-table th:nth-child(7),
+.portfolio-table th:nth-child(8) {
+  text-align: center;
+}
+
+.portfolio-table td:nth-child(1),
+.portfolio-table td:nth-child(2),
+.portfolio-table td:nth-child(3) {
+  text-align: left;
+}
+
 .portfolio-table td:nth-child(4),
 .portfolio-table td:nth-child(5),
 .portfolio-table td:nth-child(6),
@@ -104,11 +121,8 @@ tr:not(:last-child) td {
   text-align: right;
 }
 
-.portfolio-table th:nth-child(4),
-.portfolio-table th:nth-child(5),
-.portfolio-table th:nth-child(6),
-.portfolio-table th:nth-child(7) {
-  text-align: right;
+.portfolio-table td:nth-child(8) {
+  text-align: center;
 }
 
 /* Empty State Styling

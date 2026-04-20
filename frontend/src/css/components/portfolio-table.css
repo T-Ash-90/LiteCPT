@@ -37,6 +37,16 @@ th {
   letter-spacing: 0.5px;
 }
 
+/* Table Data Styles
+   ========================================================================== */
+td {
+  font-weight: 500;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  font-size: 1 rem;
+  letter-spacing: 0.5px;
+}
+
 /* Rounded Corners for First Header Cell
    ========================================================================== */
 th:first-child {
@@ -60,8 +70,8 @@ tr:not(:last-child) td {
 /* Coin Image Styling
    ========================================================================== */
 .coin-image {
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -69,7 +79,7 @@ tr:not(:last-child) td {
 /* Change Cell Styling
    ========================================================================== */
 .change-cell {
-  font-weight: 500;
+  font-weight: 700;
   text-align: right;
 }
 

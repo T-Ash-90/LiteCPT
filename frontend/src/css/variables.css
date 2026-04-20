@@ -7,14 +7,13 @@
      ========================================================================== */
 
   /* Primary Colors */
-  --primary-color: #4361ee;
-  --primary-hover: #3a56d4;
+  --primary-color: #00415d;
+  --primary-hover: #006591;
 
   /* Status Colors */
   --success-color: #34c759;
   --success-hover: #2daa4f;
   --danger-color: #ff3b30;
-  --danger-hover: #e53227;
   --warning-color: #ff9500;
 
   /* Neutral Colors */
@@ -23,7 +22,7 @@
   --dark-gray: #86868b;
 
   /* Text Colors */
-  --text-color: #1c1c1e;
+  --text-color: #00415d;
   --text-secondary: #6e6e73;
 
   /* Layout & Spacing

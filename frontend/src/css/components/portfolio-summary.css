@@ -57,6 +57,7 @@
 .summary-value {
   font-size: 2rem;
   font-weight: 700;
+  text-align: center;
   color: var(--text-color);
   margin: 0;
 }

@@ -73,6 +73,39 @@
   color: var(--text-color);
 }
 
+/* Modal Buttons
+   ========================================================================== */
+.modal-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.95rem;
+}
+
+.modal-button.primary {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 6px -1px rgba(67, 97, 238, 0.1),
+              0 2px 4px -1px rgba(67, 97, 238, 0.06);
+}
+
+.modal-button.primary:hover {
+  background: var(--primary-hover);
+}
+
+.modal-button.secondary {
+  background: white;
+  border: 1px solid var(--medium-gray);
+  color: var(--text-color);
+}
+
+.modal-button.secondary:hover {
+  background: var(--light-gray);
+}
+
 /* Modal Body
    ========================================================================== */
 .modal-body {

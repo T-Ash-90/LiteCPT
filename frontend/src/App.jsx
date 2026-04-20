@@ -159,12 +159,12 @@ function App() {
           <div className="logo-container">
             <img
               src={logo}
-              alt="Lite CPT Logo"
+              alt="LiteCPT Logo"
               className="app-logo"
             />
           </div>
           <div className="title-container">
-            <h1>Lite CPT</h1>
+            <h1>LiteCPT</h1>
             <h3>Crypto Portfolio Tracker</h3>
           </div>
           <CurrencySelector

@@ -178,7 +178,6 @@ function App() {
         {error && (
           <div className="error-message">
             Error: {error}
-            <button onClick={fetchPortfolio}>Retry</button>
           </div>
         )}
 

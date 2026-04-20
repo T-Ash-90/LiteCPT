@@ -11,16 +11,41 @@
   margin-bottom: 2rem;
 }
 
-/* Summary Card Base Styles
+/* Summary Card
    ========================================================================== */
 .summary-card {
-  background: white;
   padding: 1rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  transition: var(--transition);
-  position: relative;
-  overflow: hidden;
+  margin-bottom: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.summary-title {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.summary-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+}
+
+.summary-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-color);
+  margin: 0;
+  line-height: 1.2;
 }
 
 /* Summary Card Accent Bar (Left Border)
@@ -41,23 +66,94 @@
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 
-/* Summary Card Title
+/* Portfolio Change
    ========================================================================== */
-.summary-card h3 {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+.portfolio-change {
+  font-size: 1rem;
   font-weight: 500;
-  margin-bottom: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  text-align: center;
+  margin-top: 0.5rem;
 }
 
-/* Summary Value Display
+.portfolio-change.positive {
+  color: var(--success-color);
+}
+
+.portfolio-change.negative {
+  color: var(--danger-color);
+}
+
+/* Holdings List
    ========================================================================== */
-.summary-value {
-  font-size: 2rem;
-  font-weight: 700;
-  text-align: center;
+.holdings-list {
+  margin-top: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.holding-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.holding-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.holding-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.holding-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+}
+
+.holding-name {
+  font-weight: 500;
   color: var(--text-color);
-  margin: 0;
+}
+
+.holding-percentage {
+  width: 60px;
+  text-align: right;
+  margin-right: 0.5rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.percentage-bar-container {
+  flex: 1;
+  height: 6px;
+  background: var(--light-gray);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.percentage-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.no-holdings {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 1rem;
+  font-style: italic;
+}
+
+/* Adjust summary card padding for breakdown */
+.summary-card {
+  padding: 1rem;
 }

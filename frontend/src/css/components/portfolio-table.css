@@ -17,6 +17,7 @@ table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  padding: 1rem 1.2rem;
 }
 
 /* Table Cell and Header Base Styles
@@ -80,7 +81,6 @@ tr:not(:last-child) td {
    ========================================================================== */
 .change-cell {
   font-weight: 700;
-  text-align: right;
 }
 
 /* Positive Change Styling
@@ -97,32 +97,8 @@ tr:not(:last-child) td {
 
 /* Columns Alignment
 ========================================================================== */
-.portfolio-table th:nth-child(1),
-.portfolio-table th:nth-child(2),
-.portfolio-table th:nth-child(3),
-.portfolio-table th:nth-child(4),
-.portfolio-table th:nth-child(5),
-.portfolio-table th:nth-child(6),
-.portfolio-table th:nth-child(7),
-.portfolio-table th:nth-child(8) {
-  text-align: center;
-}
-
-.portfolio-table td:nth-child(1),
-.portfolio-table td:nth-child(2),
-.portfolio-table td:nth-child(3) {
+.portfolio-table {
   text-align: left;
-}
-
-.portfolio-table td:nth-child(4),
-.portfolio-table td:nth-child(5),
-.portfolio-table td:nth-child(6),
-.portfolio-table td:nth-child(7) {
-  text-align: right;
-}
-
-.portfolio-table td:nth-child(8) {
-  text-align: center;
 }
 
 /* Empty State Styling

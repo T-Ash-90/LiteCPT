@@ -186,23 +186,6 @@ function App() {
           currency={currency}
         />
 
-        <div className="portfolio-actions">
-          <button
-            className="add-button"
-            onClick={() => setShowAddModal(true)}
-          >
-            + Add Holding
-          </button>
-          <button
-              className="refresh-button"
-              onClick={handleRefreshPrices}
-              disabled={refreshing}
-          >
-              {refreshing ? 'Refreshing...' : ''}
-              <FaSyncAlt className={refreshing ? 'spin' : ''} />
-          </button>
-        </div>
-
         <PortfolioTable
           portfolio={sortedPortfolio}
           currency={currency}
@@ -213,6 +196,23 @@ function App() {
           error={error}
         />
       </main>
+      <br></br>
+      <div className="portfolio-actions">
+        <button
+          className="add-button"
+          onClick={() => setShowAddModal(true)}
+        >
+          + Add Holding
+        </button>
+        <button
+            className="refresh-button"
+            onClick={handleRefreshPrices}
+            disabled={refreshing}
+        >
+            {refreshing ? 'Refreshing...' : ''}
+            <FaSyncAlt className={refreshing ? 'spin' : ''} />
+        </button>
+      </div>
 
       <CoinModal
         isOpen={showAddModal}

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CSS RESET & BASE STYLES
+   BASE STYLES
    ========================================================================== */
 
 /* Box Sizing Reset
@@ -25,7 +25,7 @@ body {
                Oxygen, Ubuntu, Cantarell, sans-serif;
 
   /* Colors */
-  background-color: var(--light-gray);
+  background-color: var(--medium-gray);
   color: var(--text-color);
 
   /* Typography */

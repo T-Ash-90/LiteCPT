@@ -47,14 +47,19 @@
 
 .title-container h1 {
   margin: 0;
-  font-size: 2.5rem;
+  font-size: 2.8rem;
+  background: linear-gradient(100deg, var(--primary-color), var(--success-hover));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
 }
 
 .title-container h3 {
   margin: 0;
   font-size: 1.2rem;
   font-weight: normal;
-  color: var(--text-secondary);
+  color: linear-gradient(180deg, var(--primary-color), var(--success-color));;
 }
 
 /* Currency Selector Component

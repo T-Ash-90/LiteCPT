@@ -24,7 +24,6 @@
 .summary-title {
   text-align: center;
   margin-bottom: 1rem;
-  color: var(--text-secondary);
   font-size: 0.9rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -43,28 +42,15 @@
   font-size: 2.5rem;
   font-weight: 700;
   text-align: center;
-  color: var(--text-color);
   margin: 0;
   line-height: 1.2;
+  background: linear-gradient(180deg, var(--primary-color) 10%, var(--primary-hover));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
 }
 
-/* Summary Card Accent Bar (Left Border)
-   ========================================================================== */
-.summary-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(180deg, var(--primary-color), var(--success-color));
-}
-
-/* Summary Card Hover Effects
-   ========================================================================== */
-.summary-card:hover {
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-}
 
 /* Portfolio Change
    ========================================================================== */
@@ -153,7 +139,6 @@
   font-style: italic;
 }
 
-/* Adjust summary card padding for breakdown */
 .summary-card {
   padding: 1rem;
 }

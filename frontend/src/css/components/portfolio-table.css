@@ -40,6 +40,15 @@ th {
 
 /* Table Data Styles
    ========================================================================== */
+
+tr td:nth-child(-n+3) {
+  font-weight: 550;
+  color: var(--darkest-gray);
+  text-transform: uppercase;
+  font-size: 1 rem;
+  letter-spacing: 0.5px;
+}
+
 td {
   font-weight: 440;
   color: var(--text-primary);

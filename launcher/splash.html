@@ -7,36 +7,56 @@
   <style>
     body {
       margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      background: #fff;
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
+    }
+
+    .splash-container {
+      position: relative;
+      width: 250px;
+      height: 250px;
+      display: flex;
       flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
     #logo {
       width: 100px;
       height: auto;
-      margin-bottom: 20px;
-      animation: pulse 1.5s ease-in-out infinite;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.7));
+      animation: pulse 2s ease-in-out infinite;
     }
 
     @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 1; }
     }
 
-    .loading {
-      font-size: 24px;
-      font-weight: bold;
-      text-align: center;
+    .loading-text {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 400;
+      color: #666;
+      text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+      animation: typing 1.5s steps(10, end) infinite;
+    }
+
+    @keyframes typing {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
 <body>
-  <img src="../frontend/src/assets/images/logo.png" id="logo">
-  <div class="loading">Loading, please wait...</div>
+  <div class="splash-container">
+    <img src="../frontend/src/assets/images/logo.png" id="logo" alt="Logo">
+    <div class="loading-text">Loading...</div>
+  </div>
 </body>
 </html>

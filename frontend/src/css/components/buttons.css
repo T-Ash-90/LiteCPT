@@ -53,18 +53,20 @@
 /* Secondary Buttons (Edit/Delete)
    ========================================================================== */
 .edit-button {
-  padding: 0.2rem 0.6rem;
+  padding: 0.3rem 1.4rem;
   background: var(--primary-color);
   border-radius: 8px;
+  font-size: 0.75rem;
   font-weight: 360;
   cursor: pointer;
   transition: var(--transition);
 }
 
 .delete-button {
-  padding: 0.2rem 0.6rem;
+  padding: 0.3rem 0.9rem;
   background: var(--warning-color);
   border-radius: 8px;
+  font-size: 0.75rem;
   font-weight: 360;
   cursor: pointer;
   transition: var(--transition);
